@@ -186,6 +186,15 @@
   line-height: var(--lh-display);
   letter-spacing: var(--ls-display);
   text-transform: uppercase;
+
+  /* Zeilenumbrueche kommen ausschliesslich aus dem <br> im Markup.
+     Die Schriftgrade sind so gerechnet, dass die laengste Zeile die
+     Contentbreite exakt fuellt — ohne diese Regel entscheidet Rundung
+     darueber, ob eine Zeile umbricht. Bei 1009px Viewport war die
+     Headline 897px breit, die Spalte 895px: „Ein Abend" fiel in zwei
+     Zeilen. Ein Ueberhang von zwei Pixeln faellt niemandem auf, ein
+     Umbruch mitten im Namen dagegen sofort. */
+  white-space: nowrap;
 }
 
 /* Kleinere Variante — für Hero-Headlines, die drei Zeilen laufen */

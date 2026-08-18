@@ -84,11 +84,18 @@
      in den nachfolgenden Fließtext laufen. */
   .headline--hero   { min-height: calc(var(--u) * 58);  }
   .headline--object { min-height: calc(var(--u) * 128); }
+
+  /* 17 statt 17.5. Die Hero-Headline laeuft als einzige bis an beide
+     Viewportkanten; bei 17.5 ist die laengste Zeile („Zwei Heimaten")
+     383px breit und damit 8px breiter als ein 375er-Display — der letzte
+     Buchstabe wurde abgeschnitten. Der Wert gilt fuer jede Displaybreite,
+     weil --u-display rein proportional skaliert. */
+  .headline--hero .headline__text { font-size: calc(var(--u-display) * 17); }
   /* Baguette und Sacré-Cœur bauen flacher als das Brandenburger Tor —
      mit der Vorgabe von oben klaffte hier eine tote Fläche zwischen Bild
      und Folgeelement. Der zweite Selektor trifft nur die Gästeliste-Seite:
      im Hero heißt der Wrapper headline--hero, nicht headline--object. */
-  .section--dark   .headline--object { min-height: calc(var(--u) * 98); }
+  .section--dark   .headline--object { min-height: calc(var(--u) * 90); }
   .section--accent .headline--object { min-height: calc(var(--u) * 90); }
 }
 
@@ -140,29 +147,25 @@
    hinter der Kontur (z-3), sodass die Buchstaben als Umriss über dem
    Papierausschnitt weiterlaufen.
 
-   Zwei Maße sind hier nicht frei wählbar:
+   Zur Position:
 
-   1) Kein Anschnitt am rechten Rand. Diese Sektion trägt als einzige
-      overflow: visible (das Sticky-Bild im Split braucht es). Ein Objekt,
-      das aus dem Bild läuft, würde die ganze Seite horizontal scrollbar
-      machen — deshalb bleibt die Canvaskante innerhalb des Viewports,
-      inklusive des transparenten Randes des PNG.
-
-   2) Die Unterkante des Objekts liegt ungefähr auf der Grundlinie der
-      zweiten Zeile. Auf dem Elfenbein ist die Kontur marineblau, sie
+   1) Die Unterkante des Objekts liegt ungefähr auf der Grundlinie der
+      zweiten Zeile. Auf dem Elfenbein war die Kontur marineblau, sie
       trägt also über den hellen Flächen des Stichs (Himmel, Kuppel,
       Fassade) und verschwindet über den dunklen Bäumen unten links.
       Diese Position legt Zeile 1 vollständig auf die Kuppel; nur bei
-      „im Monat" grenzt das „o" an die Baumgruppe.
+      „im Monat" grenzt das „o" an die Baumgruppe. Seit die Sektion
+      weinrot ist, steht die Kontur in Marineblau statt Creme — dieselbe
+      Überlegung, andere Farbe (siehe „Formate-Sektion auf Weinrot").
 
-   3) 49u ist der rechte Anschlag. Weiter rechts stünde die Canvaskante
-      über dem Viewportrand und die Seite wäre horizontal scrollbar (siehe
-      1). Wer das Objekt weiter nach rechts braucht, muss es entweder
-      schmaler machen — bei 40u reicht es bis an den Anfang des „n"
-      (x 901) — oder es in eine eigene, viewportbreite Clipping-Box
-      legen, dann darf es wie in den übrigen Sektionen aus dem Bild laufen.
-      Buchstabenkanten in Zeile 2 als Orientierung: „M" 489, „o" 736,
-      „n" 901, „a" 1066, „t" 1226. */
+   2) Buchstabenkanten in Zeile 2 als Orientierung, falls verschoben
+      werden soll: „M" 489, „o" 736, „n" 901, „a" 1066, „t" 1226.
+
+   Frühere Fassungen dieses Kommentars nannten 49u als rechten Anschlag,
+   weil ein Überstand die Seite horizontal scrollbar gemacht hätte. Das
+   galt, solange die Sektion overflow: visible trug. Sie clippt inzwischen
+   (wegen des Arc), das Objekt dürfte hier also auch rechts aus dem Bild
+   laufen. */
 .object--sacrecoeur {
   width: calc(var(--u) * 44);
   margin-top: calc(var(--u) * 0.5);
@@ -182,9 +185,13 @@
     margin-top: calc(var(--u) * 60);
     margin-left: calc(var(--u) * -14);
   }
+  /* 46u statt 26u: bei 26u lag die Wurst ueber den letzten Buchstaben von
+     „Stammgast". Auf dem Elfenbein ist die Kontur marineblau und
+     verschwindet in einem so dunklen Stich — das Wort war schlicht weg.
+     Jetzt steht sie unter der Typografie, leicht ueber dem Tor. */
   .object--currywurst {
     width: calc(var(--u) * 52);
-    margin-top: calc(var(--u) * 26);
+    margin-top: calc(var(--u) * 46);
     margin-left: calc(var(--u) * 48);
   }
   .object--baguette {
@@ -278,7 +285,15 @@
 }
 
 @media (max-width: 479px) {
-  .split__image { width: 70%; margin: 0 auto; }
+  /* Auch mobil links angeschnitten — die Sektion clippt, der Anschnitt
+     ist das Gestaltungsmittel und darf auf dem Handy nicht verlorengehen.
+     margin-top muss explizit auf 0: der negative Wert vom Desktop wuerde
+     das Tor hier in den Vorspanntext ziehen. */
+  .split__image {
+    width: 120%;
+    margin-top: 0;
+    margin-left: calc(var(--u) * -29);
+  }
 }
 
 
@@ -398,4 +413,76 @@
   }
 
   .horizon__photo::before { height: calc(var(--u) * 14); }
+}
+
+
+/* ── Zwischenbereich 480–900px ──────────────────────────────
+   Landscape-Handys und kleine Tablets. Der fehlende zweite Breakpoint
+   des Systems.
+
+   Warum es hier ueberhaupt bricht: unterhalb von 1000px Viewport haengt
+   --u an der Untergrenze des clamp (10px) und hoert auf mitzuwachsen,
+   waehrend die Contentbreite weiter mit dem Viewport schrumpft. Alle
+   Desktop-Maße sind aber Vielfache von --u und damit auf ein Verhaeltnis
+   von 1280px Contentbreite zu u=14.4px gerechnet. Gemessen bei 600px:
+
+     .textblock--offset  startet bei 444px in einer 489px breiten Spalte
+                         — dem Absatz bleiben 44px, er laeuft als
+                         Buchstabenband nach unten.
+     .split__image       haengt an margin-left -26u = -260px in einer nur
+                         244px breiten Spalte. Vom Arc bleiben 43%.
+     .object--tor-bleed  liegt bei aufgehobenem Versatz direkt hinter dem
+                         Fliesstext, der Absatz ist unlesbar.
+
+   Die Loesung ist dieselbe Stapelung wie auf dem Handy. Die Maße stehen
+   hier in vw statt in --u, weil sie das mitwachsen muessen, was --u in
+   diesem Bereich nicht mehr tut. Die Zahlen sind die der Mobilfassung:
+   dort ist --u unterhalb von 500px praktisch identisch mit 1vw, die
+   Komposition ist also dieselbe, nur groesser. */
+
+/* Das Seitenpadding haengt am Desktop an --u und friert deshalb unterhalb
+   von 1000px Viewport bei 55,6px ein, waehrend der Viewport weiter
+   schrumpft. Die Headlines skalieren aber mit --u-display = 1vw, sind also
+   immer 88,9vw breit. Gemessen: bei 600px Headline 533px in einer 489px
+   breiten Spalte, bei 945px Headline 840px in 834px — beides umbrochen,
+   „Heute fremd" und „auf den Tisch" fallen auseinander. Mit einem Padding
+   in vw stimmen Spalte und Headline wieder exakt ueberein, wie am Desktop
+   und wie auf dem Handy. Der Bereich reicht bis 999px, weil --u erst ab
+   1000px wieder mitwaechst. */
+
+@media (min-width: 480px) and (max-width: 999px) {
+  :root { --container-padding: 5.56vw; }
+}
+
+
+@media (min-width: 480px) and (max-width: 900px) {
+
+  /* Reservierte Hoehe fuer die absolut gesetzten Objekte, sonst laufen
+     sie in das jeweils folgende Element. */
+  .headline--hero                    { min-height:  58vw; }
+  .headline--object                  { min-height: 128vw; }
+  .section--dark   .headline--object { min-height:  90vw; }
+  .section--accent .headline--object { min-height:  90vw; }
+
+  .headline--hero .headline__text { font-size: calc(var(--u-display) * 17); }
+
+  .object--eiffel-hero { width: 58vw; margin-top:  2vw; margin-left:  48vw; }
+  .object--tor-bleed   { width: 78vw; margin-top: 60vw; margin-left: -14vw; }
+  .object--currywurst  { width: 52vw; margin-top: 46vw; margin-left:  48vw; }
+  .object--baguette    { width: 72vw; margin-top: 22vw; margin-left:  32vw; }
+  .object--sacrecoeur  { width: 74vw; margin-top: 12vw; margin-left: 18.8vw; }
+
+  /* Alle Textspalten volle Breite — die halbe Contentbreite gibt es in
+     diesem Bereich nicht mehr sinnvoll. */
+  .textblock,
+  .textblock--wide,
+  .textblock--lead   { max-width: 100%; }
+  .textblock--offset { margin-left: 0; }
+  .textblock--lead p { font-size: var(--fs-body-lg); }
+
+  /* Split stapeln, Bild ueber den Karten, Anschnitt links bleibt. */
+  .split          { flex-direction: column; }
+  .split__visual  { width: 100%; padding-top: 0; position: static; }
+  .split__content { width: 100%; padding-top: var(--space-lg); }
+  .split__image   { width: 120%; margin-top: 0; margin-left: -29vw; }
 }
