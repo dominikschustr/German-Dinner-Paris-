@@ -159,9 +159,9 @@ button:focus-visible,
 }
 .container--center { display: flex; justify-content: center; align-items: flex-start; }
 
-@media (max-width: 479px) {
-  .container { max-width: 100%; }
-}
+/* Kein Sonderfall für schmale Displays nötig: --container-max-width ist
+   100u, und --u ist 1vw — der Container ist unterhalb von 1440px also
+   ohnehin genau so breit wie der Viewport. */
 
 
 /* ── Spacer ─────────────────────────────────────────────────
@@ -183,10 +183,9 @@ button:focus-visible,
 .textblock--offset    { margin-left: var(--column-offset-half); }
 .textblock--wide      { max-width: var(--column-text-wide); }
 
-@media (max-width: 479px) {
-  .textblock, .textblock--wide { max-width: 100%; }
-  .textblock--offset { margin-left: 0; }
-}
+/* Beide Maße regeln sich in tokens.css selbst: die Spaltenbreiten über
+   min()/max(), der Versatz über --column-offset-half, das unter 720px
+   auf 0 geht. Hier braucht es deshalb keine Media Query. */
 
 
 /* ── 50/50-Split mit Sticky-Visual ──────────────────────────
@@ -196,8 +195,13 @@ button:focus-visible,
 .split__visual  { width: 50%; position: sticky; top: 0; padding-top: var(--space-2xl); }
 .split__content { width: 50%; padding-top: var(--space-lg); }
 
-@media (max-width: 479px) {
+/* Unter 720px stapeln die beiden Hälften. Das ist eine der zwei
+   Stellen, an denen die Bildschirmbreite wirklich ein anderes Layout
+   erzwingt: eine halbe Spalte ist bei 375px 166px breit, darin sind
+   Akkordeon-Titel und Fließtext nicht mehr unterzubringen. Die
+   Reihenfolge bleibt die des Desktops — Bild oben, Karten darunter. */
+@media (max-width: 719px) {
   .split          { flex-direction: column; }
   .split__visual  { width: 100%; position: static; padding-top: 0; }
-  .split__content { width: 100%; padding-top: calc(var(--u) * 20); }
+  .split__content { width: 100%; padding-top: var(--space-lg); }
 }

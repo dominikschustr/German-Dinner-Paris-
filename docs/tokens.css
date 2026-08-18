@@ -15,17 +15,30 @@
 
   /* ══ 1. BASIS-UNIT ═════════════════════════════════════════
      Die zentrale Größe des gesamten Systems. Alles ist ein
-     Vielfaches davon.
-     Original: font-size: 1vw, ab 1440px eingefroren auf 14.4px.
-     clamp() ergänzt eine Untergrenze und behebt damit den
-     Lesbarkeitsdefekt der Referenz zwischen 480 und 767px. */
-  --u: clamp(10px, 1vw, 14.4px);
+     Vielfaches davon: Abstände, Spaltenbreiten, Bildmaße,
+     Bildpositionen, Radien, Kartenüberlappung.
 
-  /* Zweiter Unit nur für Display-Typografie und Marquee.
-     Ohne Untergrenze, damit Headlines auf sehr schmalen Viewports
-     die Contentbreite füllen statt überzulaufen — die Untergrenze
-     von --u schützt den Fließtext, würde hier aber Überlauf erzeugen. */
-  --u-display: min(1vw, 14.4px);
+     1vw, ab 1440px eingefroren auf 14.4px. Bewusst OHNE Untergrenze:
+     dadurch ist die gesamte Geometrie der Seite auf jeder Breite
+     proportional identisch. Ein Handy zeigt nicht ein anderes Layout,
+     sondern dasselbe Layout kleiner — die Bildkomposition, die
+     Abstandsverhältnisse und die Anschnitte stimmen bis auf das
+     Pixel mit dem Desktop überein.
+
+     Eine frühere Fassung hatte hier clamp(10px, 1vw, 14.4px). Die
+     Untergrenze hat den Fließtext gerettet, aber die Geometrie
+     zerrissen: unterhalb von 1000px hörte --u auf mitzuwachsen,
+     während der Viewport weiter schrumpfte. Genau daraus entstanden
+     die Brüche zwischen Desktop- und Mobilansicht. Die Lesbarkeit
+     der Schrift wird jetzt dort gelöst, wo sie hingehört — in der
+     Typo-Skala (Block 3), nicht in der Layout-Einheit. */
+  --u: min(1vw, 14.4px);
+
+  /* Display-Typografie. Identisch mit --u, seit dieses keine
+     Untergrenze mehr hat. Bleibt als eigener Name bestehen, weil er
+     die Absicht benennt: Headlines skalieren rein proportional und
+     bekommen nie einen Mindestwert. */
+  --u-display: var(--u);
 
 
   /* ══ 2. FARBEN ═════════════════════════════════════════════ */
@@ -96,14 +109,33 @@
      an Antons Laufweite angepasst: Anton läuft rund 1,6× breiter als
      MD Nichrome. Erhalten bleibt die Regel, nicht die Zahl — die
      Headline füllt die Contentbreite von 1280px. */
+  /* Display: rein proportional, ohne Boden. Diese Grade sind auf jeder
+     Breite riesig, ein Mindestwert wäre sinnlos — und würde die Headline
+     auf schmalen Viewports über die Contentbreite hinaustreiben. */
   --fs-display-2xl: calc(var(--u-display) * 17.2);  /* 248px @1440 */
   --fs-display-xl:  calc(var(--u-display) * 15.5);  /* 223px @1440 */
-  --fs-heading-sm:  calc(var(--u) * 2.22);  /*  32px         */
-  --fs-body-lg:     calc(var(--u) * 1.81);  /*  26.1px       */
-  --fs-button:      calc(var(--u) * 1.67);  /*  24px         */
-  --fs-nav:         calc(var(--u) * 1.11);  /*  16px         */
-  --fs-caption:     calc(var(--u) * 1.11);  /*  16px         */
-  --fs-link-sm:     calc(var(--u) * 1);     /*  14.4px       */
+
+  /* Lesetypografie: proportional MIT Boden. Das ist die einzige Stelle,
+     an der die Mobilansicht bewusst von der reinen Verkleinerung
+     abweicht, und die Abweichung ist unvermeidlich: Geometrie darf
+     beliebig klein werden, Schrift nicht. Bei 375px wäre der Fließtext
+     ohne Boden 6,8px hoch.
+
+     max() statt einer Media Query, damit es keine Sprungstelle gibt: der
+     proportionale Wert gilt, solange er über dem Boden liegt, und
+     übernimmt ab der jeweiligen Breite von selbst. Fließtext etwa
+     wechselt bei rund 940px Viewport.
+
+     Folge, die man kennen muss: unter dieser Schwelle wächst der
+     Kontrast zwischen Headline und Fließtext nicht mehr mit. Am Desktop
+     stehen 248px gegen 26px (9,5:1), bei 375px 66px gegen 17px (3,9:1).
+     Die Hierarchie bleibt eindeutig, sie wird nur flacher. */
+  --fs-heading-sm:  max(21px, calc(var(--u) * 2.22));  /*  32px @1440 */
+  --fs-body-lg:     max(17px, calc(var(--u) * 1.81));  /*  26.1px     */
+  --fs-button:      max(15px, calc(var(--u) * 1.67));  /*  24px       */
+  --fs-nav:         max(13px, calc(var(--u) * 1.11));  /*  16px       */
+  --fs-caption:     max(12px, calc(var(--u) * 1.11));  /*  16px       */
+  --fs-link-sm:     max(12px, calc(var(--u) * 1));     /*  14.4px     */
 
   --lh-display: .9;
   --lh-tight:   1;
@@ -133,9 +165,15 @@
   --container-padding:   var(--space-xl);         /*   80px */
   --content-width:       calc(var(--u) * 88.9);   /* 1280px */
 
-  --column-text:         calc(var(--u) * 36.11);  /*  520px */
-  --column-text-wide:    calc(var(--u) * 60);     /*  864px */
-  --column-offset-half:  calc(var(--u) * 44.44);  /*  640px */
+  /* Textspalten: proportional, aber mit einer Mindestbreite — die
+     Gegenseite des Schriftbodens. Bei 375px wäre die Standardspalte
+     135px breit, mit 17px Schrift also rund dreizehn Zeichen pro Zeile.
+     min(100%, …) hält sie zugleich innerhalb der Contentbreite, sodass
+     die Mindestbreite auf sehr schmalen Displays zur Vollbreite wird.
+     Am Desktop greift beides nicht, dort gelten die 520 bzw. 864px. */
+  --column-text:         min(100%, max(320px, calc(var(--u) * 36.11)));  /* 520px */
+  --column-text-wide:    min(100%, max(320px, calc(var(--u) * 60)));     /* 864px */
+  --column-offset-half:  calc(var(--u) * 44.44);                         /* 640px */
 
   --card-height:         calc(var(--u) * 44.31);  /*  638px */
   --portrait-max-height: calc(var(--u) * 33);     /*  475px */
@@ -148,9 +186,13 @@
 
   /* ══ 6. BORDER RADIUS ══════════════════════════════════════ */
 
-  --radius-sm:   8px;
-  --radius-md:   1.2rem;   /* 19.2px — Standard für alle Flächen */
-  --radius-lg:   1.2rem;
+  /* Radien skalieren mit, sonst wirkt eine 333px breite Karte auf dem
+     Handy viel runder als dieselbe Karte mit 633px am Desktop. Früher
+     stand hier 1.2rem — ein rem-Wert hängt an der Browserschrift und
+     bleibt auf jeder Breite bei 19,2px. */
+  --radius-sm:   calc(var(--u) * 0.56);   /*   8px @1440 */
+  --radius-md:   calc(var(--u) * 1.33);   /* 19.2px — Standard für Flächen */
+  --radius-lg:   calc(var(--u) * 1.33);
   --radius-btn:  1em;      /* relativ zur eigenen Schriftgröße */
   --radius-pill: 1.39em;
 
@@ -205,40 +247,36 @@
 
 
 /* ============================================================
-   MOBILE — der einzige echte Layout-Breakpoint.
-   Eigener Multiplikatorsatz auf demselben Basisunit.
-   Display schrumpft stark (17.5→19.7 bei viel kleinerem u),
-   Body wächst relativ (1.81→4.62). Das Kontrastverhältnis
-   fällt von ~10:1 auf ~4:1 — beabsichtigt.
+   SCHMALE DISPLAYS
+   Bewusst winzig. Es gibt keinen zweiten Multiplikatorsatz mehr:
+   Abstände, Bildmaße, Spaltenbreiten und Radien kommen auf jeder
+   Breite aus derselben Skala, weil --u durchgehend 1vw ist. Was
+   hier steht, sind die zwei Werte, die physikalisch nicht
+   mitskalieren können.
+
+   Eine frühere Fassung hatte an dieser Stelle einen komplett
+   eigenen Satz Multiplikatoren — 4.62 statt 1.81 für den
+   Fließtext, 30 statt 15 für den Sektionsabstand, eigene
+   Bildpositionen. Das Ergebnis war eine zweite, eigenständige
+   Gestaltung statt einer Verkleinerung der ersten. Genau das
+   sollte weg.
    ============================================================ */
 
-@media (max-width: 479px) {
+@media (max-width: 719px) {
   :root {
-    --u: clamp(3.6px, 1vw, 5px);
-    --u-display: 1vw;
+    /* Die Kontur der Display-Headlines. 1px auf einer 250px hohen
+       Schrift ist proportional etwas völlig anderes als 1px auf
+       66px — proportional richtig wären 0,26px, das kann kein
+       Display darstellen. 0,7px ist der Kompromiss: noch sichtbar,
+       aber nicht mehr plakativ. Die einzige Alternative wäre, den
+       Effekt auf schmalen Displays ganz aufzugeben. */
+    --text-stroke: var(--text-stroke-mobile);
 
-    --fs-display-2xl: calc(var(--u-display) * 17.2);
-    --fs-display-xl:  calc(var(--u-display) * 15.5);
-    --fs-heading-sm:  calc(var(--u) * 4.62);
-    --fs-body-lg:     calc(var(--u) * 4.62);
-    --fs-button:      calc(var(--u) * 4);
-    --fs-nav:         calc(var(--u) * 4);
-    --fs-caption:     calc(var(--u) * 3.59);
-    --fs-link-sm:     calc(var(--u) * 3.59);
-
-    --space-2xs: calc(var(--u) * 1);
-    --space-xs:  calc(var(--u) * 2);
-    --space-sm:  calc(var(--u) * 4);
-    --space-md:  calc(var(--u) * 6);
-    --space-lg:  calc(var(--u) * 8);
-    --space-xl:  calc(var(--u) * 5.56);   /* Seitenpadding bleibt proportional */
-    --space-2xl: calc(var(--u) * 10);
-    --space-3xl: calc(var(--u) * 25);
-    --space-4xl: calc(var(--u) * 30);
-
-    --logo-width:    calc(var(--u) * 30);
-    --card-overlap:  calc(var(--u) * -8.2);
-    --radius-pill:   3em;
-    --text-stroke:   var(--text-stroke-mobile);
+    /* Der Versatz der halben Contentbreite. Er setzt voraus, dass
+       rechts daneben noch eine lesbare Spalte übrig bleibt:
+       Contentbreite 88,9vw minus Versatz 44,44vw ergibt bei 720px
+       genau die 320px Mindestspalte, darunter zu wenig. Unterhalb
+       steht der Fließtext deshalb links, die Bildobjekte darüber. */
+    --column-offset-half: 0px;
   }
 }

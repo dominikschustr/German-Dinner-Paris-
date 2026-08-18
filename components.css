@@ -36,16 +36,31 @@
   padding-top: var(--space-xs);
 }
 
-@media (max-width: 479px) {
-  .header { margin-bottom: calc(var(--u) * 15); padding-top: calc(var(--u) * 6); }
-  .logo   { padding-top: 0; }
+@media (max-width: 719px) {
+  /* Die Navigationspille ist das einzige Element, das nicht beliebig
+     mitschrumpfen darf — unter rund 44px Höhe ist sie mit dem Finger
+     nicht mehr sicher zu treffen. Dadurch reicht sie auf schmalen
+     Displays relativ tiefer ins Layout als am Desktop und berührte dort
+     die Oberkante der Headline (gemessen 10px Überlappung bei 375px).
+     Der Kopfbereich bekommt deshalb die Höhe der Pille als Mindestmaß,
+     womit der Abstand zwischen beiden wieder dem Desktop entspricht.
+     3.4 = Innenabstand oben (1.1em) + unten (1em) + Zeilenhöhe (1.3). */
+  .header { min-height: calc(var(--fs-nav) * 3.4); }
 }
-
 
 /* ════════════════════════════════════════════════════════════
    2  NAVIGATION
-   Desktop: freischwebende Pille oben rechts — keine Leiste.
-   Mobile:  Pille unten zentriert mit Menu-Trigger.
+   Freischwebende Pille oben rechts — auf jeder Breite dieselbe.
+
+   Früher klappte sie unter 480px in ein Bottom-Sheet mit
+   „Menü"-Trigger um. Das war der auffälligste Bruch zwischen
+   Desktop und Handy: anderer Ort, andere Form, anderes
+   Bedienmuster. Mit den zwei Einträgen, die die Seite hat, passt
+   die Pille auch auf ein 320px-Display — gemessen rund 176px
+   breit. Der Trigger bleibt im Markup und auf display:none; das
+   zugehörige Skript läuft dann ins Leere, ohne zu stören.
+   Käme je ein dritter oder vierter Eintrag dazu, wäre das
+   Bottom-Sheet wieder die richtige Antwort.
    ════════════════════════════════════════════════════════════ */
 
 .nav {
@@ -89,6 +104,19 @@
 .navlink:first-child { padding-left: 1.5em; }
 .navlink:last-child  { padding-right: 1.2em; }
 
+@media (max-width: 719px) {
+  /* Das Padding steht in em der Navigationsschrift, und die hat einen
+     Boden. Dadurch bleibt die Pille absolut fast gleich groß, während der
+     Viewport schrumpft: am Desktop nimmt sie 5% der Breite ein, bei 375px
+     wären es 16% — sie würde die Headline überdecken. Flacheres Padding
+     bringt sie auf rund 44px Höhe, also weiterhin auf die Mindestgröße
+     für Fingertippen, bei etwa 9% der Breite. Form, Ort und Verhalten
+     bleiben unverändert. */
+  .navlink             { padding: 1.1em .8em 1em; }
+  .navlink:first-child { padding-left: 1.2em; }
+  .navlink:last-child  { padding-right: 1.1em; }
+}
+
 /* Harte Inversion, ohne Dauer — das prägendste Merkmal des Designs */
 .navlink:hover {
   background-color: var(--color-secondary);
@@ -97,62 +125,6 @@
 }
 
 .nav__trigger { display: none; }
-
-@media (max-width: 479px) {
-  .nav {
-    /* Zentrierung über transform statt auto-Margins: bei fixierten Boxen
-       mit left:0 und right:0 lösen sich auto-Margins zu 0 auf, die Pille
-       würde am linken Rand kleben. */
-    top: auto;
-    right: auto;
-    bottom: var(--space-2xs);
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: var(--z-nav-mobile);
-
-    flex-direction: column;
-    justify-content: flex-end;
-
-    width: max-content;
-    min-width: calc(var(--u) * 38);
-    max-width: calc(var(--u) * 60);
-    height: auto;
-    margin: 0;
-  }
-
-  .nav__trigger {
-    display: block;
-    width: 100%;
-    padding: 1.4em 0 1.2em;
-    color: var(--color-text-primary);
-    font-size: var(--fs-nav);
-    font-weight: var(--fw-bold);
-    letter-spacing: var(--ls-body);
-    text-align: center;
-    cursor: pointer;
-  }
-  .nav__trigger:hover {
-    background-color: var(--color-secondary);
-    color: var(--color-text-inverse);
-  }
-  .nav__trigger[aria-expanded="true"] { color: rgba(0, 0, 0, .36); }
-
-  .nav__list {
-    display: none;
-    flex-direction: column;
-    order: -1;              /* Links klappen ÜBER dem Trigger auf */
-    overflow: hidden;
-  }
-  .nav__list[data-open="true"] { display: flex; }
-
-  .navlink {
-    width: 100%;
-    padding-inline: 0;
-    text-align: center;
-  }
-  .navlink:first-child { padding-left: 0; }
-  .navlink:last-child  { padding: 1.4em 0 1.2em; }
-}
 
 
 /* ════════════════════════════════════════════════════════════
@@ -318,9 +290,12 @@
 
 .button + .button { margin-left: var(--space-xs); }
 
-@media (max-width: 479px) {
-  /* Buttonreihe wird zum Stack */
-  .button-row { display: flex; flex-direction: column; align-items: stretch; }
+@media (max-width: 719px) {
+  /* Nur die Richtung des Abstands dreht, falls mehrere Buttons
+     nebeneinander stünden. Der Button behält seine natürliche Breite wie
+     am Desktop — eine frühere Fassung zog ihn hier auf volle Breite, was
+     ihn optisch zu einem anderen Element machte. */
+  .button-row       { display: flex; flex-direction: column; align-items: flex-start; }
   .button + .button { margin-left: 0; margin-top: var(--space-2xs); }
 }
 
@@ -502,15 +477,12 @@
 }
 .plus__line--vertical { transform: rotate(90deg); }
 
-@media (max-width: 479px) {
-  .accordion__item {
-    padding: calc(var(--u) * 6) calc(var(--u) * 6) calc(var(--u) * 12);
-    transition: all var(--transition-mobile);
-  }
-  .accordion__toggle { padding: 0; }
-  .accordion__toggle[aria-expanded="true"] { margin-bottom: var(--space-xs); }
-  .accordion__panel  { position: static; transform: none; padding-inline: 0; }
-}
+/* Kein eigener Aufbau für schmale Displays. Der Stapel funktioniert
+   dort unverändert, weil Kartenpadding, Überlappung und der Versatz
+   des Panels alle Vielfache von --u sind und damit mitskalieren. Eine
+   frühere Fassung hat die Karten hier neu gepolstert und den Panel-
+   Versatz aufgehoben — das ließ den Stapel auf dem Handy anders
+   aussehen als am Desktop, ohne dass es nötig war. */
 
 
 /* ════════════════════════════════════════════════════════════
@@ -650,14 +622,13 @@
   cursor: pointer;
 }
 
-@media (max-width: 479px) {
-  .footer {
-    flex-direction: column;
-    align-items: flex-start;
-    /* Platz für die fixierte Bottom-Navigation */
-    padding-bottom: calc(var(--u) * 30);
-  }
-  .footer__link { margin-left: 0; margin-right: calc(var(--u) * 5); }
+@media (max-width: 719px) {
+  /* Die Fußzeile bleibt eine Zeile wie am Desktop und bricht nur, wenn
+     der Platz wirklich nicht reicht — dafür sorgt flex-wrap auf
+     .footer__links. Die frühere Freihaltung von 30u am unteren Rand ist
+     weg: sie war für die fixierte Bottom-Navigation da, und die sitzt
+     jetzt wieder oben rechts. */
+  .footer { flex-wrap: wrap; row-gap: var(--space-xs); }
 }
 
 
