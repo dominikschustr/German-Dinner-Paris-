@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>German Dinner Paris — Ein Tisch, zwei Heimaten</title>
+<meta name="description" content="Die Community für Deutsche in Paris. Lange Tische, deutsch-französische Küche, neue Leute — und jedes Mal die Erkenntnis, wie viel Berlin und Paris einander zu sagen haben.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="tokens.css?v=1786995529">
+<link rel="stylesheet" href="base.css?v=1786995529">
+<link rel="stylesheet" href="components.css?v=1786995529">
+<link rel="stylesheet" href="page.css?v=1786995529">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     NAVIGATION — Desktop: Pille oben rechts. Mobile: unten zentriert.
+     ══════════════════════════════════════════════════════════ -->
+<nav class="nav" aria-label="Hauptnavigation">
+  <button class="nav__trigger" type="button" aria-expanded="false" aria-controls="navlist">Menü</button>
+  <div class="nav__list" id="navlist">
+    <a class="navlink" href="#tisch">Am Tisch</a>
+    <a class="navlink" href="gastgeber.html">Gastgeber</a>
+  </div>
+</nav>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     1  HERO
+     Zwei Cutouts, zwei Länder — die Bilder tragen die Aussage,
+     die Headline benennt sie.
+     ══════════════════════════════════════════════════════════ -->
+<section class="section section--accent">
+  <div class="container">
+
+    <header class="header">
+      <a class="wordmark" href="#">German Dinner Paris</a>
+    </header>
+
+    <div class="spacer spacer--sm"></div>
+
+    <div class="headline headline--hero">
+      <h1 class="headline__text headline__text--sm headline__text--outline" aria-hidden="true">Ein Tisch<br>Zwei Heimaten</h1>
+      <img class="object object--front object--eiffel-hero" src="01_Eiffelturm.png" alt="" aria-hidden="true">
+      <h1 class="headline__text headline__text--sm">Ein Tisch<br>Zwei Heimaten</h1>
+    </div>
+
+    <div class="spacer spacer--sm"></div>
+
+    <div class="textblock textblock--lead">
+      <p>Wir sind die Community für Deutsche, die Paris zu ihrer zweiten
+         Heimat gemacht haben. Einmal im Monat sitzen wir in einem Pariser
+         Restaurant an einem langen Tisch — gutes Essen, neue Kontakte und
+         jedes Mal die Erkenntnis, wie viel Berlin und Paris einander zu
+         sagen haben.</p>
+    </div>
+
+    <div class="spacer spacer--lg"></div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     2  MANIFEST — wer am Tisch sitzt
+     ══════════════════════════════════════════════════════════ -->
+<section class="section section--neutral" id="tisch">
+  <div class="container">
+    <div class="spacer spacer--lg"></div>
+
+    <div class="headline headline--object">
+      <h2 class="headline__text headline__text--manifest headline__text--outline" aria-hidden="true">Heute fremd<br>morgen<br>Stammgast</h2>
+      <img class="object object--back object--tor-bleed" src="02_Brandenburgertor_cut.png" alt="" aria-hidden="true">
+      <img class="object object--front object--currywurst" src="05_Currywurst_cut.png" alt="" aria-hidden="true">
+      <h2 class="headline__text headline__text--manifest">Heute fremd<br>morgen<br>Stammgast</h2>
+    </div>
+
+    <div class="spacer spacer--md"></div>
+
+    <div class="textblock textblock--offset">
+      <p>An unseren Tischen sitzt die Gründerin aus dem 11e neben dem
+         Doktoranden der Sorbonne, die Köchin neben dem Konzernjuristen,
+         Menschen, die seit zwanzig Jahren hier leben, neben denen, die
+         vorletzte Woche den Umzugswagen ausgeladen haben.</p>
+      <p>Was sie verbindet, ist nicht der Pass. Es ist die Erfahrung, in zwei
+         Sprachen zu denken, zwei Arbeitskulturen zu kennen und in beiden
+         Ländern ein bisschen fremd und ein bisschen zuhause zu sein.</p>
+      <p>Wir moderieren das nicht. Wir reservieren nur den Tisch.</p>
+    </div>
+
+    <div class="spacer spacer--lg"></div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     3  MENÜ — Marquee
+     Drei Bänder: Küche, Städte, Verben. Die Liste steht jeweils
+     zweimal im Track, sonst springt der Loop bei -50%.
+     ══════════════════════════════════════════════════════════ -->
+<section class="section section--dark">
+  <div class="container">
+    <div class="spacer spacer--lg"></div>
+    <div class="headline headline--object">
+      <h2 class="headline__text headline__text--center headline__text--menu headline__text--outline" aria-hidden="true">Was bei uns<br>auf den Tisch<br>kommt</h2>
+      <img class="object object--front object--baguette" src="04_Baguette_cut.png" alt="" aria-hidden="true">
+      <h2 class="headline__text headline__text--center headline__text--menu">Was bei uns<br>auf den Tisch<br>kommt</h2>
+    </div>
+    <div class="spacer spacer--md"></div>
+  </div>
+
+  <div class="marquee" aria-label="Aus der Karte">
+    <div class="marquee__track">
+      <ul class="marquee__list">
+        <li class="marquee__item"><span class="marquee__link">Coq au Vin</span></li>
+        <li class="marquee__item"><span class="marquee__link">Tarte Tatin</span></li>
+        <li class="marquee__item"><span class="marquee__link">Bouillabaisse</span></li>
+        <li class="marquee__item"><span class="marquee__link">Crème Brûlée</span></li>
+        <li class="marquee__item"><span class="marquee__link">Steak Frites</span></li>
+        <li class="marquee__item"><span class="marquee__link">Ratatouille</span></li>
+        <li class="marquee__item"><span class="marquee__link">Macaron</span></li>
+        <li class="marquee__item"><span class="marquee__link">Millefeuille</span></li>
+        <li class="marquee__item"><span class="marquee__link">Cassoulet</span></li>
+        <li class="marquee__item"><span class="marquee__link">Sole Meunière</span></li>
+      </ul>
+      <ul class="marquee__list" aria-hidden="true">
+        <li class="marquee__item"><span class="marquee__link">Coq au Vin</span></li>
+        <li class="marquee__item"><span class="marquee__link">Tarte Tatin</span></li>
+        <li class="marquee__item"><span class="marquee__link">Bouillabaisse</span></li>
+        <li class="marquee__item"><span class="marquee__link">Crème Brûlée</span></li>
+        <li class="marquee__item"><span class="marquee__link">Steak Frites</span></li>
+        <li class="marquee__item"><span class="marquee__link">Ratatouille</span></li>
+        <li class="marquee__item"><span class="marquee__link">Macaron</span></li>
+        <li class="marquee__item"><span class="marquee__link">Millefeuille</span></li>
+        <li class="marquee__item"><span class="marquee__link">Cassoulet</span></li>
+        <li class="marquee__item"><span class="marquee__link">Sole Meunière</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="marquee" aria-label="Wo wir uns treffen">
+    <div class="marquee__track marquee__track--reverse">
+      <ul class="marquee__list">
+        <li class="marquee__item"><span class="marquee__link">Le Marais</span></li>
+        <li class="marquee__item"><span class="marquee__link">Belleville</span></li>
+        <li class="marquee__item"><span class="marquee__link">Oberkampf</span></li>
+        <li class="marquee__item"><span class="marquee__link">Montmartre</span></li>
+        <li class="marquee__item"><span class="marquee__link">Bastille</span></li>
+        <li class="marquee__item"><span class="marquee__link">Pigalle</span></li>
+        <li class="marquee__item"><span class="marquee__link">Saint-Germain</span></li>
+        <li class="marquee__item"><span class="marquee__link">Batignolles</span></li>
+        <li class="marquee__item"><span class="marquee__link">Odéon</span></li>
+        <li class="marquee__item"><span class="marquee__link">République</span></li>
+      </ul>
+      <ul class="marquee__list" aria-hidden="true">
+        <li class="marquee__item"><span class="marquee__link">Le Marais</span></li>
+        <li class="marquee__item"><span class="marquee__link">Belleville</span></li>
+        <li class="marquee__item"><span class="marquee__link">Oberkampf</span></li>
+        <li class="marquee__item"><span class="marquee__link">Montmartre</span></li>
+        <li class="marquee__item"><span class="marquee__link">Bastille</span></li>
+        <li class="marquee__item"><span class="marquee__link">Pigalle</span></li>
+        <li class="marquee__item"><span class="marquee__link">Saint-Germain</span></li>
+        <li class="marquee__item"><span class="marquee__link">Batignolles</span></li>
+        <li class="marquee__item"><span class="marquee__link">Odéon</span></li>
+        <li class="marquee__item"><span class="marquee__link">République</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="marquee" aria-label="Was an unseren Abenden passiert">
+    <div class="marquee__track">
+      <ul class="marquee__list">
+        <li class="marquee__item"><span class="marquee__link">Anstoßen</span></li>
+        <li class="marquee__item"><span class="marquee__link">Nachschenken</span></li>
+        <li class="marquee__item"><span class="marquee__link">Widersprechen</span></li>
+        <li class="marquee__item"><span class="marquee__link">Weiterdenken</span></li>
+        <li class="marquee__item"><span class="marquee__link">Verbinden</span></li>
+        <li class="marquee__item"><span class="marquee__link">Bleiben</span></li>
+      </ul>
+      <ul class="marquee__list" aria-hidden="true">
+        <li class="marquee__item"><span class="marquee__link">Anstoßen</span></li>
+        <li class="marquee__item"><span class="marquee__link">Nachschenken</span></li>
+        <li class="marquee__item"><span class="marquee__link">Widersprechen</span></li>
+        <li class="marquee__item"><span class="marquee__link">Weiterdenken</span></li>
+        <li class="marquee__item"><span class="marquee__link">Verbinden</span></li>
+        <li class="marquee__item"><span class="marquee__link">Bleiben</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="spacer spacer--md"></div>
+  <div class="container container--center">
+    <a class="button" href="gastgeber.html">Auf die Gästeliste</a>
+  </div>
+  <div class="spacer spacer--lg"></div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     4  EINLADUNG + HORIZONT
+     Die Einladung sitzt im Verlauf: das Elfenbein wird nach unten
+     hin zum Pariser Abendhimmel und geht ohne Kante in das Foto
+     über. Der Verlauf endet exakt auf dem Mittelwert der obersten
+     Bildzeile (--color-horizon-sky); die Blende über der Bildkante
+     fängt die horizontale Streuung dieser Zeile ab.
+     ══════════════════════════════════════════════════════════ -->
+<section class="section horizon" id="platz">
+  <div class="horizon__sky">
+    <div class="container">
+      <div class="spacer spacer--lg"></div>
+
+      <div class="headline">
+        <h2 class="headline__text headline__text--closing headline__text--outline" aria-hidden="true">Salut!<br>Servus!</h2>
+        <h2 class="headline__text headline__text--closing">Salut!<br>Servus!</h2>
+      </div>
+
+      <!-- md statt sm: schiebt Fließtext und Mail-Button tiefer in den
+           Verlauf, wo die Farbe schon deutlich in den Abendhimmel dreht. -->
+      <div class="spacer spacer--md"></div>
+
+      <div class="textblock textblock--wide">
+        <p>Wir sind keine Institution und kein Verein, sondern eine Gästeliste,
+           die weiterwächst. Schreib uns, wer du bist und was dich nach Paris
+           gebracht hat — der Rest ergibt sich beim Essen.</p>
+      </div>
+
+      <div class="spacer spacer--sm"></div>
+
+      <div class="button-row">
+        <a class="button button--dark button--filled" href="mailto:hallo@germandinner.paris">hallo@germandinner.paris</a>
+      </div>
+
+      <!-- xs statt lg: der Button steht dicht an der Bildkante, damit der
+           Block im Bild endet statt davor auszulaufen. -->
+      <div class="spacer spacer--xs"></div>
+    </div>
+  </div>
+
+  <div class="horizon__photo">
+    <img src="11_Paris.png"
+         alt="Blick über die Seine auf Paris in der Abenddämmerung: links das Institut de France, in der Mitte der Pont des Arts, am Horizont der Eiffelturm">
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     5  FOOTER — steht unter dem Bild, am Fuß der Seite
+     ══════════════════════════════════════════════════════════ -->
+<section class="section section--neutral">
+  <div class="container">
+    <div class="spacer spacer--xs"></div>
+    <footer class="footer">
+      <p class="footer__text">© German Dinner Paris</p>
+      <div class="footer__links">
+        <a class="footer__link" href="#">Instagram</a>
+        <a class="footer__link" href="#">LinkedIn</a>
+        <a class="footer__link" href="#">Impressum</a>
+      </div>
+    </footer>
+  </div>
+</section>
+
+
+<script>
+/* Mobile-Navigation --------------------------------------------------- */
+(function () {
+  var trigger = document.querySelector('.nav__trigger');
+  var list    = document.getElementById('navlist');
+  if (!trigger || !list) return;
+
+  trigger.addEventListener('click', function () {
+    var open = trigger.getAttribute('aria-expanded') === 'true';
+    trigger.setAttribute('aria-expanded', String(!open));
+    list.setAttribute('data-open', String(!open));
+  });
+
+  list.addEventListener('click', function (e) {
+    if (e.target.closest('.navlink')) {
+      trigger.setAttribute('aria-expanded', 'false');
+      list.setAttribute('data-open', 'false');
+    }
+  });
+})();
+
+/* Akkordeon ----------------------------------------------------------- */
+(function () {
+  var toggles = document.querySelectorAll('.accordion__toggle');
+
+  Array.prototype.forEach.call(toggles, function (toggle) {
+    toggle.addEventListener('click', function () {
+      var panel = document.getElementById(toggle.getAttribute('aria-controls'));
+      var open  = toggle.getAttribute('aria-expanded') === 'true';
+
+      /* Nur ein Panel gleichzeitig — der Kartenstapel bleibt so lesbar */
+      Array.prototype.forEach.call(toggles, function (other) {
+        if (other === toggle) return;
+        other.setAttribute('aria-expanded', 'false');
+        var p = document.getElementById(other.getAttribute('aria-controls'));
+        if (p) p.setAttribute('data-open', 'false');
+      });
+
+      toggle.setAttribute('aria-expanded', String(!open));
+      if (panel) panel.setAttribute('data-open', String(!open));
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,738 @@
+/* ============================================================
+   COMPONENTS
+   Setzt tokens.css und base.css voraus.
+
+   Aufbau der Datei:
+     1  Header & Logo
+     2  Navigation (Desktop-Pille / Mobile-Bottom-Sheet)
+     3  Display-Headline mit Outline-Overlay  ← die Signature
+     4  Bildobjekte (freigestellte Cutouts)
+     5  Buttons
+     6  Karten
+     7  Akkordeon-Stapel
+     8  Marquee
+     9  Full-Bleed-Bildsektion
+    10  Footer
+    11  Erweiterungen: Formulare, Badges, Tabs
+         (in der Referenz nicht vorhanden — konsequent abgeleitet)
+   ============================================================ */
+
+
+/* ════════════════════════════════════════════════════════════
+   1  HEADER & LOGO
+   ════════════════════════════════════════════════════════════ */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  padding-top: var(--space-xs);
+  position: relative;
+}
+
+.logo {
+  width: var(--logo-width);
+  max-width: none;
+  padding-top: var(--space-xs);
+}
+
+@media (max-width: 479px) {
+  .header { margin-bottom: calc(var(--u) * 15); padding-top: calc(var(--u) * 6); }
+  .logo   { padding-top: 0; }
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   2  NAVIGATION
+   Desktop: freischwebende Pille oben rechts — keine Leiste.
+   Mobile:  Pille unten zentriert mit Menu-Trigger.
+   ════════════════════════════════════════════════════════════ */
+
+.nav {
+  position: fixed;
+  top: var(--space-xs);
+  right: var(--container-padding);
+  z-index: var(--z-nav);
+
+  display: flex;
+  align-items: center;
+
+  background-color: var(--color-surface);
+  border: var(--border-default);
+  border-radius: var(--radius-pill);
+
+  /* Pflicht: beschneidet die schwarze Hover-Fläche am Radius */
+  overflow: hidden;
+}
+
+.nav__list {
+  display: flex;
+  align-items: center;
+}
+
+.navlink {
+  display: block;
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: var(--fs-nav);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-body);
+  letter-spacing: var(--ls-body);
+  text-decoration: none;
+
+  /* em bezieht sich hier auf die EIGENE font-size, nicht auf --u.
+     Bei --fs-nav = 16px: 27.2 / 14.4 / 24px. */
+  padding: 1.7em .9em 1.5em;
+
+  transition-duration: var(--transition-instant);
+}
+.navlink:first-child { padding-left: 1.5em; }
+.navlink:last-child  { padding-right: 1.2em; }
+
+/* Harte Inversion, ohne Dauer — das prägendste Merkmal des Designs */
+.navlink:hover {
+  background-color: var(--color-secondary);
+  color: var(--color-text-inverse);
+  opacity: 1;
+}
+
+.nav__trigger { display: none; }
+
+@media (max-width: 479px) {
+  .nav {
+    /* Zentrierung über transform statt auto-Margins: bei fixierten Boxen
+       mit left:0 und right:0 lösen sich auto-Margins zu 0 auf, die Pille
+       würde am linken Rand kleben. */
+    top: auto;
+    right: auto;
+    bottom: var(--space-2xs);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: var(--z-nav-mobile);
+
+    flex-direction: column;
+    justify-content: flex-end;
+
+    width: max-content;
+    min-width: calc(var(--u) * 38);
+    max-width: calc(var(--u) * 60);
+    height: auto;
+    margin: 0;
+  }
+
+  .nav__trigger {
+    display: block;
+    width: 100%;
+    padding: 1.4em 0 1.2em;
+    color: var(--color-text-primary);
+    font-size: var(--fs-nav);
+    font-weight: var(--fw-bold);
+    letter-spacing: var(--ls-body);
+    text-align: center;
+    cursor: pointer;
+  }
+  .nav__trigger:hover {
+    background-color: var(--color-secondary);
+    color: var(--color-text-inverse);
+  }
+  .nav__trigger[aria-expanded="true"] { color: rgba(0, 0, 0, .36); }
+
+  .nav__list {
+    display: none;
+    flex-direction: column;
+    order: -1;              /* Links klappen ÜBER dem Trigger auf */
+    overflow: hidden;
+  }
+  .nav__list[data-open="true"] { display: flex; }
+
+  .navlink {
+    width: 100%;
+    padding-inline: 0;
+    text-align: center;
+  }
+  .navlink:first-child { padding-left: 0; }
+  .navlink:last-child  { padding: 1.4em 0 1.2em; }
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   3  DISPLAY-HEADLINE MIT OUTLINE-OVERLAY   ← die Signature
+   ════════════════════════════════════════════════════════════
+
+   Markup — die Reihenfolge ist zwingend:
+
+   <div class="headline">
+     <h1 class="headline__text headline__text--outline">Text</h1>
+     <img class="object object--front" src="…" alt="">
+     <img class="object object--back"  src="…" alt="">
+     <h1 class="headline__text">Text</h1>
+   </div>
+
+   Der Outline-Klon liegt absolut über allem (z-3), die Bilder
+   dazwischen (z-2, z-1), der gefüllte Text im normalen Fluss
+   darunter. Das Bild verdeckt den gefüllten Text; die Outline
+   bleibt sichtbar. Aria-hidden auf dem Klon nicht vergessen.
+   ════════════════════════════════════════════════════════════ */
+
+.headline { position: relative; }
+
+.headline__text {
+  position: relative;
+  margin: 0;
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  font-size: var(--fs-display-2xl);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-display);
+  text-transform: uppercase;
+}
+
+/* Kleinere Variante — für Hero-Headlines, die drei Zeilen laufen */
+.headline__text--sm { font-size: var(--fs-display-xl); }
+
+.headline__text--outline {
+  position: absolute;
+  top: 0;
+  /* left/right sind Pflicht: ohne sie schrumpft die absolut gesetzte
+     Kopie auf Textbreite. Bei linksbündigen Headlines fällt das nicht
+     auf, bei zentrierten zentriert sie dann in einer schmaleren Box
+     als die gefüllte Kopie — die Kontur säße sichtbar versetzt. */
+  left: 0;
+  right: 0;
+  z-index: var(--z-heading-outline);
+  margin-top: 0;
+}
+
+/* Bewusst ohne z-index: die Klasse steht nach --outline und hat dieselbe
+   Spezifität. Ein z-index hier würde den der Outline-Kopie überschreiben,
+   sie unter die Bildobjekte schieben und den Signature-Effekt genau bei
+   zentrierten Headlines aushebeln. */
+.headline__text--center  { text-align: center; }
+.headline__text--inverse { color: var(--color-text-inverse); }
+
+/* @supports-Kapselung ist Pflicht: ohne sie wird die Headline in
+   nicht unterstützenden Engines unsichtbar statt nur ungefüllt. */
+@supports (-webkit-text-stroke: 1px black) {
+  .headline__text--outline {
+    -webkit-text-stroke: var(--text-stroke) var(--color-text-primary);
+    -webkit-text-fill-color: transparent;
+  }
+  .section--dark .headline__text--outline,
+  .section--accent .headline__text--outline {
+    -webkit-text-stroke-color: var(--color-text-inverse);
+  }
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   4  BILDOBJEKTE (freigestellte Cutouts)
+   Absolut positioniert, Maße in em (= Vielfache von --u), damit
+   sie exakt mit der Typografie mitskalieren.
+   Kein Radius, kein object-fit, kein Overlay.
+   ════════════════════════════════════════════════════════════ */
+
+.object {
+  position: absolute;
+  max-width: none;
+}
+.object--back  { z-index: var(--z-image-back);  }
+.object--front { z-index: var(--z-image-front); }
+
+/* Beispielplatzierungen — beim Austausch der Bilder anpassen.
+   Zielbereich: horizontal 40–75% der Contentbreite, vertikal im
+   unteren Drittel der Headline. Mindestens ein Objekt pro Sektion
+   sollte über den Rand hinauslaufen (negativer margin-left). */
+
+.object--hero-back  { width: calc(var(--u) * 24.03); margin-top: calc(var(--u) * 12.4); margin-left: calc(var(--u) * 39); }
+.object--hero-front { width: calc(var(--u) * 27.29); margin-top: calc(var(--u) *  5.5); margin-left: calc(var(--u) * 40.1); }
+.object--wide-right { width: calc(var(--u) * 60.21); margin-top: calc(var(--u) *  4.2); margin-left: calc(var(--u) * 41.5); }
+.object--bleed-left { width: calc(var(--u) * 40.14); margin-top: calc(var(--u) *  8.1); margin-left: calc(var(--u) * -10.4); }
+
+
+/* ════════════════════════════════════════════════════════════
+   5  BUTTONS
+   Drei Varianten, alle über Farbinversion definiert.
+   transition-duration: 0s — harte Umschaltung ist Absicht.
+   ════════════════════════════════════════════════════════════ */
+
+.button {
+  display: inline-block;
+  cursor: pointer;
+
+  font-family: var(--font-body);
+  font-size: var(--fs-button);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-body);
+  letter-spacing: var(--ls-display);
+  text-align: center;
+  text-decoration: none;
+
+  /* Asymmetrisch: oben 1.3em, unten 1em. Kompensiert die
+     Grundlinienlage der Grotesk — nicht "korrigieren". */
+  padding: 1.3em 1.5em 1em;
+
+  background-color: transparent;
+  border: var(--border-width) solid var(--color-text-inverse);
+  border-radius: var(--radius-btn);   /* 1em der eigenen font-size */
+  color: var(--color-text-inverse);
+
+  transition-duration: var(--transition-instant);
+}
+
+.button:hover {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  opacity: 1;
+}
+
+/* Auf hellem Grund */
+.button--dark {
+  border-color: var(--color-secondary);
+  color: var(--color-text-primary);
+}
+.button--dark:hover {
+  background-color: var(--color-secondary);
+  color: var(--color-text-inverse);
+}
+
+/* Gefüllt */
+.button--filled {
+  background-color: var(--color-secondary);
+  border-color: var(--color-secondary);
+  color: var(--color-text-on-fill);
+}
+.button--filled:hover {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+.button + .button { margin-left: var(--space-xs); }
+
+@media (max-width: 479px) {
+  /* Buttonreihe wird zum Stack */
+  .button-row { display: flex; flex-direction: column; align-items: stretch; }
+  .button + .button { margin-left: 0; margin-top: var(--space-2xs); }
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   6  KARTEN
+   Weiße Fläche, 1px schwarzer Rahmen, großer Radius.
+   Kein Schatten. Der Info-Kasten steht bewusst 1px über die
+   Kartenkante hinaus.
+   ════════════════════════════════════════════════════════════ */
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+
+  width: 100%;
+  height: var(--card-height);
+
+  background-color: var(--color-surface);
+  border: var(--border-default);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+/* Riesiger Name als Outline-Relief im Hintergrund */
+.card__nametext {
+  position: relative;
+  z-index: var(--z-base);
+  margin: 0 .25em 0 0;
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  font-size: var(--fs-display-2xl);
+  line-height: var(--lh-display);
+  white-space: nowrap;
+}
+@supports (-webkit-text-stroke: 1px white) {
+  .card__nametext { -webkit-text-stroke: var(--text-stroke) var(--color-surface); }
+}
+
+.card__portrait {
+  position: absolute;
+  z-index: var(--z-image-back);
+  max-height: var(--portrait-max-height);
+  max-width: none;
+  margin-inline: auto;
+}
+
+.card__info {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: var(--z-card-overlay);
+
+  /* Überlappt den Kartenrand um genau 1px — bewusst */
+  width: 100.2%;
+  margin-bottom: -.2%;
+  margin-left: -.1%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  padding: var(--space-sm);
+  background-color: var(--color-surface);
+  border: var(--border-default);
+  border-radius: var(--radius-md);
+}
+
+.card__title {
+  margin-top: .25em;
+  font-size: var(--fs-heading-sm);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-tight);
+}
+
+/* Grid über negative Margins — 28.8px Gutter */
+.card-grid { display: flex; flex-wrap: wrap; margin-inline: calc(var(--space-xs) * -1); }
+.card-grid__item { width: 33.333%; padding: 0 var(--space-xs) var(--space-sm); }
+
+@media (max-width: 991px) { .card-grid__item { width: 50%; } }
+
+@media (max-width: 479px) {
+  .card {
+    height: auto;
+    justify-content: flex-start;
+    padding-top: calc(var(--u) * 30);
+    border-radius: var(--radius-md);
+  }
+  .card__portrait {
+    position: relative;
+    max-height: calc(var(--u) * 70);
+    margin-top: var(--space-xs);
+  }
+  .card__info {
+    position: relative;
+    border: none;
+    padding: calc(var(--u) * 6);
+    transition: all var(--transition-mobile);
+  }
+  .card-grid { margin-inline: 0; }
+  .card-grid__item { width: 100%; padding: 0 0 var(--space-xs); }
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   7  AKKORDEON-STAPEL ("Rolodex")
+   Karten überlappen sich vertikal via negativem margin-top.
+   Der Stapeleffekt ersetzt jeden Schatten.
+   ════════════════════════════════════════════════════════════ */
+
+.accordion__item {
+  position: relative;
+  z-index: var(--z-card-overlay);
+  width: 100%;
+
+  margin-top: var(--card-overlap);   /* −49px Überlappung */
+  padding: 0;
+
+  background-color: var(--color-surface);
+  border: var(--border-default);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+}
+.accordion__item:first-child { margin-top: 0; }
+.accordion__item:last-child  { padding-top: var(--space-md); }
+
+.accordion__toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+
+  /* Das große padding-bottom hält den überlappten Bereich leer */
+  padding: var(--space-md) var(--space-sm) calc(var(--u) * 5.5);
+
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.accordion__title {
+  font-size: var(--fs-heading-sm);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-tight);
+}
+
+.accordion__panel {
+  position: relative;
+  display: none;
+  padding-inline: var(--space-sm);
+  background-color: var(--color-surface);
+  overflow: hidden;
+
+  /* Zieht den Inhalt unter den Toggle hoch */
+  transform: translateY(calc(var(--u) * -5));
+}
+.accordion__panel[data-open="true"] { display: block; }
+
+/* Plus-Icon aus zwei 1px-Divs — kein SVG, kein Icon-Font.
+   Skaliert perfekt mit und braucht keinen Asset-Load. */
+.plus {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--space-md);
+  height: var(--space-md);
+  flex: none;
+}
+.plus__line {
+  position: absolute;
+  width: 100%;
+  height: var(--border-width);
+  background-color: var(--color-secondary);
+}
+.plus__line--vertical { transform: rotate(90deg); }
+
+@media (max-width: 479px) {
+  .accordion__item {
+    padding: calc(var(--u) * 6) calc(var(--u) * 6) calc(var(--u) * 12);
+    transition: all var(--transition-mobile);
+  }
+  .accordion__toggle { padding: 0; }
+  .accordion__toggle[aria-expanded="true"] { margin-bottom: var(--space-xs); }
+  .accordion__panel  { position: static; transform: none; padding-inline: 0; }
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   8  MARQUEE
+   Die Liste muss ZWEIMAL identisch im Track stehen, sonst
+   springt der Loop bei translateX(-50%).
+
+   <div class="marquee">
+     <div class="marquee__track">
+       <ul class="marquee__list">…</ul>
+       <ul class="marquee__list" aria-hidden="true">…</ul>
+     </div>
+   </div>
+   ════════════════════════════════════════════════════════════ */
+
+.marquee {
+  position: relative;
+  z-index: var(--z-image-back);
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: var(--marquee-height);
+}
+
+.marquee__track {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  will-change: transform;
+  animation: marquee-ltr var(--marquee-duration) var(--marquee-easing) infinite;
+}
+.marquee__track--reverse {
+  animation-name: marquee-rtl;
+}
+
+.marquee__list { display: flex; flex-wrap: nowrap; margin: 0; padding: 0; list-style: none; }
+
+.marquee__item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 6vw;
+}
+
+.marquee__link {
+  position: relative;
+  z-index: var(--z-ticker);
+  color: var(--color-text-inverse);
+  font-family: var(--font-display);
+  font-size: 17.5vw;
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-display);
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition-duration: var(--transition-instant);
+}
+
+@supports (-webkit-text-stroke: 1px white) {
+  .marquee__link {
+    -webkit-text-stroke: var(--text-stroke) var(--color-text-inverse);
+    -webkit-text-fill-color: transparent;
+  }
+  /* Auf Marineblau wäre eine Füllung im Weinrot fast unsichtbar (2.2:1).
+     Das Wort füllt sich deshalb massiv in Creme — Kontur wird Fläche. */
+  .marquee__link:hover {
+    -webkit-text-stroke: 0 var(--color-text-inverse);
+    -webkit-text-fill-color: var(--color-text-inverse);
+  }
+}
+.marquee__link:hover { color: var(--color-text-inverse); opacity: 1; }
+
+@keyframes marquee-ltr { from { transform: translateX(0);    } to { transform: translateX(-50%); } }
+@keyframes marquee-rtl { from { transform: translateX(-50%); } to { transform: translateX(0);    } }
+
+@media (min-width: 992px) {
+  .marquee__track:hover { animation-play-state: paused; }
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   9  FULL-BLEED-BILDSEKTION
+   Bild sitzt UNTEN in der Sektion, Text steht darüber im Freien.
+   Der Wrapper-Hintergrund ist der Ladeplatzhalter.
+   ════════════════════════════════════════════════════════════ */
+
+.fullbleed {
+  position: absolute;
+  z-index: var(--z-base);
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+
+  background-color: var(--color-image-placeholder);
+}
+
+.fullbleed__image {
+  z-index: var(--z-base);
+  width: 100%;
+  max-width: none;
+  object-fit: cover;
+}
+
+/* Reserviert die Bildhöhe im Fluss */
+.fullbleed__spacer { height: var(--fullbleed-height); }
+
+
+/* ════════════════════════════════════════════════════════════
+   10  FOOTER
+   ════════════════════════════════════════════════════════════ */
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: calc(var(--u) * 3);
+}
+
+.footer__text {
+  margin-bottom: 0;
+  color: var(--color-text-primary);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-loose);
+}
+
+.footer__link {
+  margin-right: var(--space-sm);
+  font-size: var(--fs-link-sm);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+}
+
+@media (max-width: 479px) {
+  .footer {
+    flex-direction: column;
+    align-items: flex-start;
+    /* Platz für die fixierte Bottom-Navigation */
+    padding-bottom: calc(var(--u) * 30);
+  }
+  .footer__link { margin-left: 0; margin-right: calc(var(--u) * 5); }
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   11  ERWEITERUNGEN
+   In der Referenz nicht vorhanden. Aus den Prinzipien
+   abgeleitet: weiße Fläche, 1px schwarzer Rahmen, radius-md,
+   harte Zustände, kein Schatten.
+   Ohne Bruch entfernbar, falls nicht gebraucht.
+   ════════════════════════════════════════════════════════════ */
+
+.field { display: flex; flex-direction: column; gap: var(--space-2xs); }
+
+.label {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-body);
+}
+
+.input, .textarea, .select {
+  width: 100%;
+  padding: var(--space-2xs) var(--space-xs);
+
+  background-color: var(--color-surface);
+  border: var(--border-default);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+
+  font-family: var(--font-body);
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body);
+  letter-spacing: var(--ls-body);
+
+  box-shadow: var(--shadow-none);
+  transition-duration: var(--transition-instant);
+}
+.input::placeholder, .textarea::placeholder { color: var(--color-text-secondary); opacity: .5; }
+
+.input:focus-visible, .textarea:focus-visible, .select:focus-visible {
+  outline: 2px solid var(--color-text-primary);
+  outline-offset: 2px;
+}
+
+.input[aria-invalid="true"] { border-color: var(--color-error); }
+.field__error   { color: var(--color-error);   font-size: var(--fs-caption); }
+.field__success { color: var(--color-success); font-size: var(--fs-caption); }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: .4em .9em;
+  border: var(--border-default);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-body);
+  text-transform: uppercase;
+}
+.badge--success { border-color: var(--color-success); color: var(--color-success); }
+.badge--warning { border-color: var(--color-warning); color: var(--color-warning); }
+.badge--error   { border-color: var(--color-error);   color: var(--color-error);   }
+
+/* Tabs verhalten sich wie Navigationslinks: harte Inversion */
+.tabs {
+  display: inline-flex;
+  border: var(--border-default);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+.tab {
+  padding: 1.7em .9em 1.5em;
+  background: transparent;
+  border: none;
+  color: var(--color-text-primary);
+  font-size: var(--fs-nav);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-body);
+  cursor: pointer;
+  transition-duration: var(--transition-instant);
+}
+.tab:hover,
+.tab[aria-selected="true"] {
+  background-color: var(--color-secondary);
+  color: var(--color-text-inverse);
+}

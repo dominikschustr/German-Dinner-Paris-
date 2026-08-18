@@ -1,0 +1,401 @@
+/* ============================================================
+   PAGE — GERMAN DINNER PARIS
+   Seitenspezifische Ergänzungen zum Design System.
+   Enthält nur: Wortmarke, Bildplatzierungen, Footer-Linkzeile,
+   Akkordeon-Fließtext. Alles andere kommt aus components.css.
+   ============================================================ */
+
+
+/* ── Wortmarke ──────────────────────────────────────────────
+   Ersetzt das Logo-Bild der Referenz. Display-Schrift in
+   Kleingröße, damit dieselbe Familie wie die Headlines spricht. */
+
+.wordmark {
+  display: inline-block;
+  padding-top: var(--space-xs);
+
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  font-size: calc(var(--u) * 1.9);
+  line-height: 1;
+  letter-spacing: .01em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.wordmark:hover { opacity: .5; }
+
+/* Auf dem Weinrot-Feld steht die Wortmarke in Creme */
+.section--accent .wordmark { color: var(--color-text-inverse); }
+
+@media (max-width: 479px) {
+  .wordmark { font-size: calc(var(--u) * 6); padding-top: 0; }
+}
+
+
+/* ── Headline-Größen ────────────────────────────────────────
+   Pro Headline aus der gemessenen Zeilenbreite abgeleitet, damit
+   die längste Zeile die Contentbreite (1280px) füllt. Die Werte
+   gelten viewportunabhängig, weil --u-display rein proportional
+   skaliert und erst bei 1440px einfriert.
+   Bei Textänderung neu bestimmen:
+     Multiplikator = 1280 / (Zeilenbreite bei 100px) * 100 / 14.4  */
+
+.headline__text--manifest { font-size: calc(var(--u-display) * 17.5); }
+.headline__text--menu     { font-size: calc(var(--u-display) * 16.5); }
+.headline__text--formate  { font-size: calc(var(--u-display) * 23);   }
+.headline__text--closing  { font-size: calc(var(--u-display) * 24);   }
+
+
+/* ── UMLAUTE IN DISPLAY-HEADLINES ───────────────────────────
+   Wichtig für deutsche Texte: Anton setzt Ä/Ö/Ü auf 1,053em Höhe,
+   der enge Zeilenabstand des Systems (line-height .9) reicht dafür
+   nicht — die Umlautpunkte laufen in die Zeile darüber.
+
+   Regel 1 (bevorzugt): mehrzeilige Display-Headlines ohne Ä/Ö/Ü
+   texten. Der enge Satz ist das prägendste Merkmal des Designs.
+
+   Regel 2 (Ausnahme): geht es nicht anders, diese Klasse ergänzen.
+   Sie lockert nur die betroffene Headline, nicht das ganze System.
+   Einzeilige Headlines brauchen sie nie. */
+
+.headline__text--accents { line-height: 1.06; }
+
+
+/* ── Hero-Headline ──────────────────────────────────────────
+   Die einzige Headline der Seite, die über die Contentbreite
+   hinausgeht: sie füllt die volle Containerbreite inklusive des
+   Seitenpaddings, läuft also bis an die Viewportkanten. Der
+   negative Rand hebt genau das Padding auf; die Breite bleibt an
+   --container-max-width gebunden, damit sie oberhalb von 1440px
+   mit dem Rest einfriert statt weiterzuwachsen. */
+
+.headline--hero .headline__text {
+  width: var(--container-max-width);
+  margin-inline: calc(var(--container-padding) * -1);
+  font-size: calc(var(--u-display) * 17.5);
+}
+
+.headline--hero { min-height: calc(var(--u) * 34); }
+
+@media (max-width: 479px) {
+  /* Auf Mobile stapeln Headline, Bild und Text untereinander. Ohne
+     Mindesthöhe im Headline-Wrapper würde das absolut gesetzte Objekt
+     in den nachfolgenden Fließtext laufen. */
+  .headline--hero   { min-height: calc(var(--u) * 58);  }
+  .headline--object { min-height: calc(var(--u) * 128); }
+  /* Baguette und Sacré-Cœur bauen flacher als das Brandenburger Tor —
+     mit der Vorgabe von oben klaffte hier eine tote Fläche zwischen Bild
+     und Folgeelement. Der zweite Selektor trifft nur die Gästeliste-Seite:
+     im Hero heißt der Wrapper headline--hero, nicht headline--object. */
+  .section--dark   .headline--object { min-height: calc(var(--u) * 98); }
+  .section--accent .headline--object { min-height: calc(var(--u) * 90); }
+}
+
+
+/* ── Bildobjekte ────────────────────────────────────────────
+   Freigestellte Papierausschnitte, absolut platziert, Maße in
+   Vielfachen von --u. Regel des Systems: mindestens ein Objekt
+   pro Sektion ist angeschnitten. */
+
+/* Hero: ein einzelnes Objekt rechts, Fließtext links. Der Eiffelturm
+   überlagert die Headline — seine dünne Silhouette lässt die cremefarbene
+   Kontur der oberen Textkopie durchscheinen, genau dafür ist der Effekt
+   gebaut. Der Turmfuß läuft unter die Headline hinaus, damit das Objekt
+   nicht bündig im Textblock sitzt. */
+.object--eiffel-hero {
+  width: calc(var(--u) * 32);
+  margin-top: 0;
+  margin-left: calc(var(--u) * 52);
+}
+
+/* Manifest: Tor unterhalb der Headline, links aus dem Bild laufend.
+   Der Fließtext steht rechts daneben (textblock--offset), sodass sich
+   Bild und Text nicht überlagern. */
+.object--tor-bleed {
+  width: calc(var(--u) * 54);
+  margin-top: calc(var(--u) * 48);
+  margin-left: calc(var(--u) * -20);
+}
+
+/* Manifest: Currywurst in der Lücke rechts neben der kurzen Zeile
+   „MORGEN". Sie liegt vor der Typografie (z-2) — die Kontur der oberen
+   Textkopie bleibt darüber sichtbar. */
+.object--currywurst {
+  width: calc(var(--u) * 30);
+  margin-top: calc(var(--u) * 19);
+  margin-left: calc(var(--u) * 62);
+}
+
+/* Menü: Baguette diagonal über der zentrierten Headline. Auf dem
+   Marineblau trägt die cremefarbene Kontur über dem Brot. */
+.object--baguette {
+  width: calc(var(--u) * 44);
+  margin-top: calc(var(--u) * 5);
+  margin-left: calc(var(--u) * 61);
+}
+
+/* Formate: Sacré-Cœur über der rechten Hälfte der Headline — dieselbe
+   Schichtung wie bei den übrigen Bildstellen: vor der gefüllten Textkopie,
+   hinter der Kontur (z-3), sodass die Buchstaben als Umriss über dem
+   Papierausschnitt weiterlaufen.
+
+   Zwei Maße sind hier nicht frei wählbar:
+
+   1) Kein Anschnitt am rechten Rand. Diese Sektion trägt als einzige
+      overflow: visible (das Sticky-Bild im Split braucht es). Ein Objekt,
+      das aus dem Bild läuft, würde die ganze Seite horizontal scrollbar
+      machen — deshalb bleibt die Canvaskante innerhalb des Viewports,
+      inklusive des transparenten Randes des PNG.
+
+   2) Die Unterkante des Objekts liegt ungefähr auf der Grundlinie der
+      zweiten Zeile. Auf dem Elfenbein ist die Kontur marineblau, sie
+      trägt also über den hellen Flächen des Stichs (Himmel, Kuppel,
+      Fassade) und verschwindet über den dunklen Bäumen unten links.
+      Diese Position legt Zeile 1 vollständig auf die Kuppel; nur bei
+      „im Monat" grenzt das „o" an die Baumgruppe.
+
+   3) 49u ist der rechte Anschlag. Weiter rechts stünde die Canvaskante
+      über dem Viewportrand und die Seite wäre horizontal scrollbar (siehe
+      1). Wer das Objekt weiter nach rechts braucht, muss es entweder
+      schmaler machen — bei 40u reicht es bis an den Anfang des „n"
+      (x 901) — oder es in eine eigene, viewportbreite Clipping-Box
+      legen, dann darf es wie in den übrigen Sektionen aus dem Bild laufen.
+      Buchstabenkanten in Zeile 2 als Orientierung: „M" 489, „o" 736,
+      „n" 901, „a" 1066, „t" 1226. */
+.object--sacrecoeur {
+  width: calc(var(--u) * 44);
+  margin-top: calc(var(--u) * 0.5);
+  margin-left: calc(var(--u) * 49);
+}
+
+@media (max-width: 479px) {
+  /* Eiffelturm oben rechts über der Headline, rechts angeschnitten;
+     Tor darunter, links aus dem Bild laufend. */
+  .object--eiffel-hero {
+    width: calc(var(--u) * 58);
+    margin-top: calc(var(--u) * 2);
+    margin-left: calc(var(--u) * 48);
+  }
+  .object--tor-bleed {
+    width: calc(var(--u) * 78);
+    margin-top: calc(var(--u) * 60);
+    margin-left: calc(var(--u) * -14);
+  }
+  .object--currywurst {
+    width: calc(var(--u) * 52);
+    margin-top: calc(var(--u) * 26);
+    margin-left: calc(var(--u) * 48);
+  }
+  .object--baguette {
+    width: calc(var(--u) * 72);
+    margin-top: calc(var(--u) * 22);
+    margin-left: calc(var(--u) * 32);
+  }
+  /* 18.8u ist auch hier der rechte Anschlag: die Formate-Sektion trägt
+     overflow: visible, ein überstehender Rand — auch der transparente Rand
+     des PNG — macht die Seite horizontal scrollbar. Rechts bleiben 5px. */
+  .object--sacrecoeur {
+    width: calc(var(--u) * 74);
+    margin-top: calc(var(--u) * 12);
+    margin-left: calc(var(--u) * 18.8);
+  }
+}
+
+
+/* ── Formate-Sektion auf Weinrot ────────────────────────────
+   Das Farbfeld gilt für die ganze Sektion, aber zwei Elemente darin
+   führen ihre eigene Farblogik und müssen zurückgeholt werden. */
+
+/* Die Karten des Stapels bleiben weiße Flächen mit dunklem Text. Ohne
+   diese Regel setzt .section--accent Titel und Fließtext der Karten auf
+   Creme — also Creme auf Weiß, praktisch unsichtbar. */
+.section--accent .accordion__title,
+.section--accent .accordion__text { color: var(--color-text-primary); }
+
+/* Fußzeile auf dem Farbfeld (Gästeliste-Seite). .footer__text setzt seine
+   Farbe selbst auf Marineblau, die Links erben das Weinrot der
+   Basis-Linkfarbe — beides auf Weinrot unlesbar (2,0:1 bzw. 1,2:1).
+   Creme bringt 9,6:1. Die Regel in base.css greift hier nicht, sie ist
+   bewusst auf Textlinks in p und li beschränkt. */
+.section--accent .footer__text,
+.section--accent .footer__link { color: var(--color-text-inverse); }
+
+/* Die Kontur dieser Headline bleibt marineblau, obwohl das Farbfeld nach
+   Creme verlangt. Sie ist nur dort überhaupt sichtbar, wo das Sacré-Cœur
+   die gefüllte Kopie verdeckt — und über dem hellen Kalkstein der Kuppel
+   trägt Creme nicht, die Buchstaben wären weg. Der übrige Teil der Kontur
+   liegt deckungsgleich auf der cremefarbenen Füllung und spielt keine
+   Rolle. Gleiche Spezifität wie die Regel in components.css, gewinnt
+   über die Reihenfolge der Dateien. */
+@supports (-webkit-text-stroke: 1px black) {
+  .headline__text--formate.headline__text--outline {
+    -webkit-text-stroke-color: var(--color-secondary);
+  }
+}
+
+
+/* ── Marquee-Band ───────────────────────────────────────────
+   Gegenüber der Referenz (17,5vw) verkleinert: Anton läuft so viel
+   breiter, dass bei 17,5vw nur noch ein einziges Wort im Viewport
+   stünde. 12vw zeigt rund anderthalb Begriffe — das Band liest sich
+   als Laufschrift statt als Einzelwort. */
+
+.marquee       { height: 15vw; }
+.marquee__link { font-size: 12vw; }
+
+@media (max-width: 479px) {
+  .marquee       { height: 22vw; }
+  .marquee__link { font-size: 17vw; }
+}
+
+
+/* ── Bildspalte im Split (Gästeliste-Seite) ─────────────────
+   Die Spalte steht bewusst statisch. In base.css ist sie sticky, hier
+   nicht: die Sektion trägt overflow: hidden, damit der Arc links an der
+   Seitenkante geschnitten wird — und ein clippender Vorfahre setzt
+   position: sticky ohnehin außer Kraft. Die Regel macht sichtbar, dass
+   das gewollt ist, statt es als stillen Nebeneffekt stehen zu lassen. */
+
+.section--accent .split__visual { position: static; }
+
+/* Der Arc läuft links aus der Seite und wird an der Kante hart
+   abgeschnitten, wie das Brandenburger Tor auf der Startseite.
+
+   Breite und Rand sind aufeinander abgestimmt: das PNG hat links 10,4%
+   transparenten Rand, das Motiv beginnt also erst bei 95px der
+   Canvasbreite. Bei 145% Breite und ml -26u liegt die linke Torkante rund
+   200px außerhalb — gut ein Viertel des Motivs ist weg. Nach rechts endet
+   die Canvaskante bei 623px und bleibt vor dem Kartenstapel (ab 721px).
+
+   Der negative margin-top hebt das Objekt über den Kartenstapel hinaus
+   nach oben, bis knapp unter den Vorspanntext. */
+.split__image {
+  width: 145%;
+  max-width: none;
+  margin-left: calc(var(--u) * -26);
+  margin-top: calc(var(--u) * -12);
+}
+
+@media (max-width: 479px) {
+  .split__image { width: 70%; margin: 0 auto; }
+}
+
+
+/* ── Akkordeon-Fließtext ────────────────────────────────────
+   Kleiner als der Haupt-Fließtext, damit der Kartenstapel nicht
+   auseinanderläuft. */
+
+.accordion__text {
+  max-width: calc(var(--u) * 33);
+  font-size: calc(var(--u) * 1.35);
+  line-height: var(--lh-body);
+}
+
+@media (max-width: 479px) {
+  .accordion__text { max-width: 100%; font-size: calc(var(--u) * 4); }
+}
+
+
+/* ── Akkordeon: Plus wird zu Minus ──────────────────────────
+   Harte Umschaltung ohne Dauer, wie alle Zustände im System. */
+
+.accordion__toggle[aria-expanded="true"] .plus__line--vertical { opacity: 0; }
+
+
+/* ── Footer-Linkzeile ───────────────────────────────────────── */
+
+.footer__links { display: flex; flex-wrap: wrap; align-items: center; }
+.footer__link:last-child { margin-right: 0; }
+
+@media (max-width: 479px) {
+  .footer__text  { margin-bottom: var(--space-xs); }
+  .footer__links { gap: 0; }
+}
+
+
+/* ── Fließtext-Rhythmus in mehrabsätzigen Blöcken ──────────── */
+
+.textblock p + p { margin-top: var(--space-xs); }
+
+
+/* ── Lead: der Einstiegstext unter der Hero-Headline ────────
+   Breitere Spalte als die Standard-Textspalte (520px) und ein größerer
+   Grad. Beides gehört zusammen: in der schmalen Spalte ergäbe der größere
+   Grad acht sehr kurze Zeilen, in der breiten Spalte sind es sechs.
+   Die Spalte bleibt deutlich unter der Contentbreite — die Regel des
+   Systems, dass Fließtext nie über die volle Breite läuft, gilt weiter. */
+
+.textblock--lead   { max-width: calc(var(--u) * 48); }   /* 691px */
+.textblock--lead p { font-size: calc(var(--u) * 2.1); }  /* 30.2px statt 26.1px */
+
+@media (max-width: 479px) {
+  /* Pflicht: die Regel oben steht in page.css und schlägt sonst die
+     Mobile-Regel aus base.css, die alle Textspalten auf 100% setzt. */
+  .textblock--lead   { max-width: 100%; }
+  .textblock--lead p { font-size: var(--fs-body-lg); }
+}
+
+
+/* ── Horizont: Abschlussbild mit Verlauf ────────────────────
+   Die einzige Stelle der Seite mit einem CSS-Gradienten. Die
+   Referenz kennt keine — dort ist der Verlauf über dem Abschlussbild
+   Teil des Fotos selbst (ein hohes Bild, dessen oberer Teil nur
+   Himmel ist). 11_Paris.png ist ein Panorama im Verhältnis 2,5:1 und
+   kann diese Fläche nicht füllen, deshalb übernimmt der Verlauf hier
+   den Part des Himmels. Das Prinzip bleibt gleich: die Seite endet
+   nicht an einer Bildkante, sondern läuft in das Bild hinein. */
+
+.horizon { background-color: var(--color-horizon-sky); }
+
+/* Der Verlauf liegt nicht auf der Sektion, sondern auf dem Block über dem
+   Foto — nur so endet er exakt an der Bildkante und nicht am Sektionsende.
+   Seine Höhe kommt aus dem Inhalt: Headline, Fließtext und Mail-Button
+   stehen im Verlauf und wandern damit selbst ins Bild hinein.
+   Der Halt bei 20% hält den Kopf der Sektion auf reinem Elfenbein, sonst
+   wäre die Kante zur Sektion darüber sichtbar; die Farbe dreht erst danach. */
+.horizon__sky {
+  background-image: linear-gradient(to bottom,
+    var(--color-background) 0%,
+    var(--color-background) 20%,
+    var(--color-horizon-sky) 100%);
+}
+
+.horizon__photo { position: relative; }
+
+.horizon__photo img {
+  width: 100%;
+  max-width: none;
+  height: auto;
+}
+
+/* Blende über der Bildkante. Die oberste Bildzeile ist nicht einfarbig,
+   sie streut horizontal zwischen #C2AEBC (links) und #F0D6D9 (rechts).
+   Die Blende liegt an der Naht deckend auf und läuft nach unten aus:
+   dadurch stimmen die Farben an der Kante exakt überein, und die
+   Restdifferenz verteilt sich über 144px Himmel statt auf einer Linie.
+   Sie darf nur so weit reichen, wie das Bild reiner Himmel ist. */
+.horizon__photo::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: calc(var(--u) * 10);
+  background-image: linear-gradient(to bottom,
+    var(--color-horizon-sky) 0%,
+    rgba(224, 199, 209, 0) 100%);
+  pointer-events: none;
+}
+
+@media (max-width: 479px) {
+  /* Das Panorama wäre bei 375px nur 150px hoch — als Abschluss zu wenig.
+     Deshalb hier ein festes, höheres Bildfenster mit Beschnitt an den
+     Seiten. object-position hält den Ausschnitt auf Eiffelturm und
+     Pont des Arts (bei 65% der Bildbreite). */
+  .horizon__photo img {
+    height: calc(var(--u) * 55);
+    object-fit: cover;
+    object-position: 65% 100%;
+  }
+
+  .horizon__photo::before { height: calc(var(--u) * 14); }
+}

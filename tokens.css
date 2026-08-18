@@ -1,0 +1,244 @@
+/* ============================================================
+   DESIGN TOKENS
+   Abgeleitet von lafamiglia.vc — siehe DESIGN-SYSTEM.md
+   ============================================================
+   AUSTAUSCHEN für ein neues Projekt:
+     - Block 2 (Farben): nur die 4 Kernfarben
+     - Block 3 (Typografie): --font-display, --font-body
+   NICHT ändern:
+     - --u und alle calc(var(--u) * n)
+     - --border-width, --transition-instant, --shadow-*
+     - die z-index-Leiter
+   ============================================================ */
+
+:root {
+
+  /* ══ 1. BASIS-UNIT ═════════════════════════════════════════
+     Die zentrale Größe des gesamten Systems. Alles ist ein
+     Vielfaches davon.
+     Original: font-size: 1vw, ab 1440px eingefroren auf 14.4px.
+     clamp() ergänzt eine Untergrenze und behebt damit den
+     Lesbarkeitsdefekt der Referenz zwischen 480 und 767px. */
+  --u: clamp(10px, 1vw, 14.4px);
+
+  /* Zweiter Unit nur für Display-Typografie und Marquee.
+     Ohne Untergrenze, damit Headlines auf sehr schmalen Viewports
+     die Contentbreite füllen statt überzulaufen — die Untergrenze
+     von --u schützt den Fließtext, würde hier aber Überlauf erzeugen. */
+  --u-display: min(1vw, 14.4px);
+
+
+  /* ══ 2. FARBEN ═════════════════════════════════════════════ */
+
+  /* Kernpalette — GERMAN DINNER PARIS
+     Tricolore, aber gedämpft: Weinrot und Marineblau statt Signalrot und
+     Signalblau, dazwischen ein warmes Elfenbein als „blanc".
+     Beide Farbfelder sind dunkel — anders als in der Referenz steht auf
+     ihnen heller Text, nicht schwarzer. Das Elfenbein trägt den dunklen
+     Text und ist zugleich der Papierton der Bildausschnitte, sodass die
+     Cutouts eingebettet statt aufgeklebt wirken. */
+  --color-primary:         #761B2E;  /* Weinrot    rgb(118,27,46)   hsl(348,63%,28%) */
+  --color-navy:            #152540;  /* Marineblau rgb(21,37,64)    hsl(218,51%,17%) */
+  --color-background:      #EEE9E0;  /* Elfenbein  rgb(238,233,224) hsl(39,29%,91%)  */
+  --color-surface:         #FFFFFF;  /* rgb(255,255,255)  hsl(0,0%,100%)   */
+
+  /* Marineblau trägt Text, Rahmen und gefüllte Flächen — reines Schwarz
+     kommt in der Palette nicht mehr vor. */
+  --color-secondary:       var(--color-navy);
+
+  /* Abgeleitet */
+  --color-accent:          var(--color-primary);
+  --color-primary-ink:     #8E2436;  /* Links auf Elfenbein, 7.1:1        */
+  --color-link-on-dark:    #E9BCC4;  /* Links auf Wein 6.3:1 / Navy 9.1:1 */
+  --color-background-hero: var(--color-primary);   /* Hero-Fläche: Weinrot   */
+  --color-background-alt:  var(--color-navy);      /* Marquee-Band: Marineblau */
+
+  --color-text-primary:    var(--color-navy);
+  --color-text-secondary:  #4C5568;
+  /* Kein reines Weiß: das warme Creme nimmt den Papierton der Cutouts auf.
+     Auf Weinrot 9.6:1, auf Marineblau 13.8:1. */
+  --color-text-inverse:    #F7F2EA;
+  --color-text-on-fill:    #F7F2EA;
+  --color-text-muted:      rgba(247, 242, 234, .22);
+
+  --color-border:          var(--color-navy);
+  --color-border-subtle:   rgba(247, 242, 234, .22);
+
+  /* Status — Erweiterung, in der Referenz nicht vorhanden.
+     Error liegt bewusst heller und oranger als das Weinrot, damit
+     Fehlermeldung und Akzentfarbe nicht verwechselbar sind. */
+  --color-success:         #1F7A52;  /* hsl(157,60%,30%) */
+  --color-warning:         #B07D12;  /* hsl(41,82%,38%)  */
+  --color-error:           #D14330;  /* hsl(8,64%,50%)   */
+
+  /* Ladeplatzhalter hinter Full-Bleed-Bildern */
+  --color-image-placeholder: #9FB0C4;
+
+  /* Nahtfarbe des Abschlussbildes: der Mittelwert der obersten Bildzeile
+     von 11_Paris.png. Der Verlauf über dem Foto endet auf genau diesem
+     Wert, deshalb ist die Kante unsichtbar. Wird das Bild getauscht, muss
+     dieser Wert neu aus der ersten Bildzeile bestimmt werden. */
+  --color-horizon-sky: #E0C7D1;
+
+
+  /* ══ 3. TYPOGRAFIE ═════════════════════════════════════════ */
+
+  --font-display: "Anton", "Big Shoulders Display", Impact, sans-serif;
+  --font-body:    "Inter", "Helvetica Neue", -apple-system,
+                  BlinkMacSystemFont, Arial, sans-serif;
+
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-bold:    700;
+
+  /* Skala — bewusst mit einem Loch zwischen heading-sm und display-xl.
+     Die Display-Multiplikatoren sind gegenüber der Referenz (17.5 / 16)
+     an Antons Laufweite angepasst: Anton läuft rund 1,6× breiter als
+     MD Nichrome. Erhalten bleibt die Regel, nicht die Zahl — die
+     Headline füllt die Contentbreite von 1280px. */
+  --fs-display-2xl: calc(var(--u-display) * 17.2);  /* 248px @1440 */
+  --fs-display-xl:  calc(var(--u-display) * 15.5);  /* 223px @1440 */
+  --fs-heading-sm:  calc(var(--u) * 2.22);  /*  32px         */
+  --fs-body-lg:     calc(var(--u) * 1.81);  /*  26.1px       */
+  --fs-button:      calc(var(--u) * 1.67);  /*  24px         */
+  --fs-nav:         calc(var(--u) * 1.11);  /*  16px         */
+  --fs-caption:     calc(var(--u) * 1.11);  /*  16px         */
+  --fs-link-sm:     calc(var(--u) * 1);     /*  14.4px       */
+
+  --lh-display: .9;
+  --lh-tight:   1;
+  --lh-body:    1.3;
+  --lh-loose:   1.5;
+
+  --ls-display: -.01vw;
+  --ls-body:    -.02em;
+
+
+  /* ══ 4. SPACING ════════════════════════════════════════════ */
+
+  --space-2xs: calc(var(--u) * 0.5);   /*   7.2px */
+  --space-xs:  calc(var(--u) * 1);     /*  14.4px */
+  --space-sm:  calc(var(--u) * 2);     /*  28.8px */
+  --space-md:  calc(var(--u) * 2.5);   /*  36px   */
+  --space-lg:  calc(var(--u) * 3.5);   /*  50.4px */
+  --space-xl:  calc(var(--u) * 5.56);  /*  80px   ← Container-Padding */
+  --space-2xl: calc(var(--u) * 6);     /*  86.4px */
+  --space-3xl: calc(var(--u) * 9);     /* 129.6px */
+  --space-4xl: calc(var(--u) * 15);    /* 216px   ← Sektionsabstand   */
+
+
+  /* ══ 5. SIZING & CONTAINER ═════════════════════════════════ */
+
+  --container-max-width: calc(var(--u) * 100);    /* 1440px */
+  --container-padding:   var(--space-xl);         /*   80px */
+  --content-width:       calc(var(--u) * 88.9);   /* 1280px */
+
+  --column-text:         calc(var(--u) * 36.11);  /*  520px */
+  --column-text-wide:    calc(var(--u) * 60);     /*  864px */
+  --column-offset-half:  calc(var(--u) * 44.44);  /*  640px */
+
+  --card-height:         calc(var(--u) * 44.31);  /*  638px */
+  --portrait-max-height: calc(var(--u) * 33);     /*  475px */
+  --card-overlap:        calc(var(--u) * -3.4);   /*  -49px */
+
+  --marquee-height:      16vw;
+  --fullbleed-height:    50vw;
+  --logo-width:          calc(var(--u) * 10.14);  /*  146px */
+
+
+  /* ══ 6. BORDER RADIUS ══════════════════════════════════════ */
+
+  --radius-sm:   8px;
+  --radius-md:   1.2rem;   /* 19.2px — Standard für alle Flächen */
+  --radius-lg:   1.2rem;
+  --radius-btn:  1em;      /* relativ zur eigenen Schriftgröße */
+  --radius-pill: 1.39em;
+
+
+  /* ══ 7. BORDERS ════════════════════════════════════════════ */
+
+  --border-width:       1px;    /* skaliert bewusst NICHT mit */
+  --border-width-thick: 1.5px;
+  --border-default:     var(--border-width) solid var(--color-border);
+  --text-stroke:        1px;
+  --text-stroke-mobile: 0.7px;
+
+
+  /* ══ 8. SHADOWS ════════════════════════════════════════════
+     Bewusste Entscheidung: das Design kennt keine Elevation.
+     Tiefe entsteht durch z-index, negative Margins und 1px-Rahmen. */
+
+  --shadow-none: none;
+  --shadow-card: none;
+
+
+  /* ══ 9. TRANSITIONS ════════════════════════════════════════
+     Zustandswechsel sind Schnitte, keine Blenden. */
+
+  --transition-instant: 0s;
+  --transition-fast:    .12s linear;   /* Obergrenze, falls unvermeidbar */
+  --transition-mobile:  .2s ease;      /* nur Akkordeon/Karten ≤479px    */
+  --marquee-duration:   60s;
+  --marquee-easing:     linear;
+  --dropdown-delay:     200ms;
+
+
+  /* ══ 10. Z-INDEX ═══════════════════════════════════════════ */
+
+  --z-base:            0;
+  --z-image-back:      1;
+  --z-image-front:     2;
+  --z-heading-outline: 3;
+  --z-ticker:          4;
+  --z-card-overlay:    2;
+  --z-nav-mobile:      100;
+  --z-nav:             900;
+
+
+  /* ══ 11. BREAKPOINTS (Referenzwerte) ═══════════════════════ */
+
+  --bp-mobile:  479px;
+  --bp-tablet:  767px;
+  --bp-laptop:  991px;
+  --bp-freeze: 1440px;
+}
+
+
+/* ============================================================
+   MOBILE — der einzige echte Layout-Breakpoint.
+   Eigener Multiplikatorsatz auf demselben Basisunit.
+   Display schrumpft stark (17.5→19.7 bei viel kleinerem u),
+   Body wächst relativ (1.81→4.62). Das Kontrastverhältnis
+   fällt von ~10:1 auf ~4:1 — beabsichtigt.
+   ============================================================ */
+
+@media (max-width: 479px) {
+  :root {
+    --u: clamp(3.6px, 1vw, 5px);
+    --u-display: 1vw;
+
+    --fs-display-2xl: calc(var(--u-display) * 17.2);
+    --fs-display-xl:  calc(var(--u-display) * 15.5);
+    --fs-heading-sm:  calc(var(--u) * 4.62);
+    --fs-body-lg:     calc(var(--u) * 4.62);
+    --fs-button:      calc(var(--u) * 4);
+    --fs-nav:         calc(var(--u) * 4);
+    --fs-caption:     calc(var(--u) * 3.59);
+    --fs-link-sm:     calc(var(--u) * 3.59);
+
+    --space-2xs: calc(var(--u) * 1);
+    --space-xs:  calc(var(--u) * 2);
+    --space-sm:  calc(var(--u) * 4);
+    --space-md:  calc(var(--u) * 6);
+    --space-lg:  calc(var(--u) * 8);
+    --space-xl:  calc(var(--u) * 5.56);   /* Seitenpadding bleibt proportional */
+    --space-2xl: calc(var(--u) * 10);
+    --space-3xl: calc(var(--u) * 25);
+    --space-4xl: calc(var(--u) * 30);
+
+    --logo-width:    calc(var(--u) * 30);
+    --card-overlap:  calc(var(--u) * -8.2);
+    --radius-pill:   3em;
+    --text-stroke:   var(--text-stroke-mobile);
+  }
+}

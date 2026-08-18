@@ -1,0 +1,203 @@
+/* ============================================================
+   BASE — Reset, Basiselemente, Layout-Primitives
+   Setzt tokens.css voraus.
+   ============================================================ */
+
+/* ── Schriften einbinden ────────────────────────────────────
+   Ersetze diese Blöcke durch deine eigenen Familien.
+   Display: hoch-kondensierte Grotesk, nur uppercase, ≥60px.
+   Body:    neutrale Grotesk, 400/500/700.
+
+@font-face {
+  font-family: "Display";
+  src: url("fonts/display-regular.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Body";
+  src: url("fonts/body-regular.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Body";
+  src: url("fonts/body-medium.woff2") format("woff2");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Body";
+  src: url("fonts/body-bold.woff2") format("woff2");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+   ──────────────────────────────────────────────────────────── */
+
+
+/* ── Reset ──────────────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { height: 100%; -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100%;
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+
+  /* Der Basisunit lebt hier. Alle em-Werte im System beziehen
+     sich auf diesen Wert. */
+  font-family: var(--font-body);
+  font-size: var(--u);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-body);
+  letter-spacing: var(--ls-display);
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img, svg, video { display: block; max-width: 100%; }
+
+button, input, select, textarea { font: inherit; color: inherit; }
+
+
+/* ── Basiselemente ──────────────────────────────────────────── */
+
+h1, h2, h3, h4, h5, h6 { margin: 0; font-weight: var(--fw-regular); }
+
+p {
+  margin: 0 0 var(--space-2xs);
+  color: var(--color-text-primary);
+  font-size: var(--fs-body-lg);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-body);
+  letter-spacing: var(--ls-body);
+}
+p:last-child { margin-bottom: 0; }
+
+a {
+  color: var(--color-primary-ink);
+  text-decoration: underline;
+  text-underline-offset: .15em;
+  transition-duration: var(--transition-instant);
+}
+a:hover { opacity: .5; }
+
+/* Auf den dunklen Farbfeldern trägt der Akzentton nicht — Weinrot auf
+   Marineblau kommt nur auf 2.2:1. Dort steht ein aufgehelltes Rosé
+   derselben Farbfamilie. Bewusst nur auf Textlinks im Fließtext
+   gemünzt — Buttons, Wortmarke und Navigation führen ihre eigene
+   Farblogik und dürfen hiervon nicht überschrieben werden. */
+.section--dark :is(p, li) a,
+.section--accent :is(p, li) a { color: var(--color-link-on-dark); }
+
+
+/* ── Focus (fehlt in der Referenz vollständig) ─────────────── */
+
+a:focus-visible,
+button:focus-visible,
+.button:focus-visible,
+.navlink:focus-visible,
+.accordion__toggle:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+
+/* ── Reduced Motion (fehlt in der Referenz) ────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track { animation: none !important; transform: none !important; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* ============================================================
+   LAYOUT-PRIMITIVES
+   ============================================================ */
+
+/* ── Sektion ────────────────────────────────────────────────
+   Vollflächiger Farbblock. overflow:hidden fängt angeschnittene
+   Bildobjekte ab — das ist Pflicht, kein Detail. */
+
+.section {
+  position: relative;
+  overflow: hidden;
+}
+/* Zwei dunkle Farbfelder — Weinrot und Marineblau — mit hellem Text,
+   dazwischen das Elfenbein mit dunklem Text. Anders als in der Referenz,
+   deren Akzentfläche hell genug für schwarzen Text war. */
+.section--accent {
+  background-color: var(--color-background-hero);
+  color: var(--color-text-inverse);
+}
+.section--dark {
+  background-color: var(--color-background-alt);
+  color: var(--color-text-inverse);
+}
+.section--neutral { background-color: var(--color-background); }
+
+.section--accent :is(h1, h2, h3, h4, p),
+.section--dark   :is(h1, h2, h3, h4, p) { color: var(--color-text-inverse); }
+
+.section--visible { overflow: visible; }   /* nur wenn Sticky-Kinder enthalten sind */
+
+
+/* ── Container ──────────────────────────────────────────────
+   1440px max, 80px Seitenpadding → 1280px Contentbreite.
+   Das ist die Referenzachse des gesamten Designs. */
+
+.container {
+  max-width: var(--container-max-width);
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+}
+.container--center { display: flex; justify-content: center; align-items: flex-start; }
+
+@media (max-width: 479px) {
+  .container { max-width: 100%; }
+}
+
+
+/* ── Spacer ─────────────────────────────────────────────────
+   Vertikaler Rhythmus über leere Elemente statt Margins.
+   Ungewöhnlich, aber der Grund für die Konsistenz. */
+
+.spacer      { flex: none; }
+.spacer--xs  { width: var(--space-sm);  height: var(--space-sm);  }
+.spacer--sm  { width: var(--space-2xl); height: var(--space-2xl); }
+.spacer--md  { width: var(--space-3xl); height: var(--space-3xl); }
+.spacer--lg  { width: var(--space-4xl); height: var(--space-4xl); }
+
+
+/* ── Textspalte ─────────────────────────────────────────────
+   Nie zentriert, nie volle Breite. Entweder linksbündig bei 0
+   oder startend bei exakt 50% der Contentbreite. */
+
+.textblock            { max-width: var(--column-text); position: relative; z-index: var(--z-image-front); }
+.textblock--offset    { margin-left: var(--column-offset-half); }
+.textblock--wide      { max-width: var(--column-text-wide); }
+
+@media (max-width: 479px) {
+  .textblock, .textblock--wide { max-width: 100%; }
+  .textblock--offset { margin-left: 0; }
+}
+
+
+/* ── 50/50-Split mit Sticky-Visual ──────────────────────────
+   Kein Gap. Trennung entsteht durch Innen-Whitespace. */
+
+.split          { display: flex; align-items: flex-start; position: relative; }
+.split__visual  { width: 50%; position: sticky; top: 0; padding-top: var(--space-2xl); }
+.split__content { width: 50%; padding-top: var(--space-lg); }
+
+@media (max-width: 479px) {
+  .split          { flex-direction: column; }
+  .split__visual  { width: 100%; position: static; padding-top: 0; }
+  .split__content { width: 100%; padding-top: calc(var(--u) * 20); }
+}
