@@ -28,4 +28,4 @@ git push -q origin main
 
 echo
 echo "Fertig. GitHub Pages baut jetzt neu, das dauert ein bis zwei Minuten:"
-echo "https://dominikschustr.github.io/german-dinner-paris/"
+echo "https://dominikschustr.github.io/German-Dinner-Paris-/"
