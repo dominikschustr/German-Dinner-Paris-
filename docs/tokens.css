@@ -135,7 +135,11 @@
   --fs-button:      max(15px, calc(var(--u) * 1.67));  /*  24px       */
   --fs-nav:         max(13px, calc(var(--u) * 1.11));  /*  16px       */
   --fs-caption:     max(12px, calc(var(--u) * 1.11));  /*  16px       */
-  --fs-link-sm:     max(12px, calc(var(--u) * 1));     /*  14.4px     */
+  /* Boden 13.5px statt 12px: das ist der Wert, den die Referenz auf dem
+     Telefon fuer ihre Fusszeilenlinks setzt. Bei 12px lagen unsere
+     darunter. Ab 1350px Breite greift ohnehin wieder der proportionale
+     Wert. */
+  --fs-link-sm:     max(13.5px, calc(var(--u) * 1));   /*  14.4px     */
 
   --lh-display: .9;
   --lh-tight:   1;

@@ -36,25 +36,21 @@
   padding-top: var(--space-xs);
 }
 
-@media (max-width: 719px) {
-  /* Die Navigationspille ist das einzige Element, das nicht beliebig
-     mitschrumpfen darf — unter rund 44px Höhe ist sie mit dem Finger
-     nicht mehr sicher zu treffen. Dadurch reicht sie auf schmalen
-     Displays relativ tiefer ins Layout als am Desktop und berührte dort
-     die Oberkante der Headline (gemessen 10px Überlappung bei 375px).
-     Der Kopfbereich bekommt deshalb die Höhe der Pille als Mindestmaß,
-     womit der Abstand zwischen beiden wieder dem Desktop entspricht.
-     3.4 = Innenabstand oben (1.1em) + unten (1em) + Zeilenhöhe (1.3). */
-  .header { min-height: calc(var(--fs-nav) * 3.4); }
-}
+/* Die frühere Mindesthöhe des Kopfbereichs auf schmalen Displays ist
+   entfallen. Sie hat Platz für die Navigationspille freigehalten, die
+   dort oben rechts stand; seit die Pille unten sitzt, gibt es nichts
+   mehr freizuhalten. Der Kopfbereich ist damit auf jeder Breite gleich
+   hoch, nämlich so hoch wie die Wortmarke. */
 
 /* ════════════════════════════════════════════════════════════
    2  NAVIGATION
-   Freischwebende Pille oben rechts — auf jeder Breite dieselbe.
+   Freischwebende Pille: am Desktop oben rechts, am Telefon unten
+   in der Mitte. Genau diesen Wechsel macht die Referenz auch.
 
-   Früher klappte sie unter 480px in ein Bottom-Sheet mit
-   „Menü"-Trigger um. Das war der auffälligste Bruch zwischen
-   Desktop und Handy: anderer Ort, andere Form, anderes
+   Form, Farbe, Inhalt und Verhalten bleiben dabei gleich — es
+   ändert sich nur, wo die Pille klebt. Das ist etwas anderes als
+   die frühere Fassung, die unter 480px in ein Bottom-Sheet mit
+   „Menü"-Trigger umklappte: anderer Ort, andere Form, anderes
    Bedienmuster. Mit den zwei Einträgen, die die Seite hat, passt
    die Pille auch auf ein 320px-Display — gemessen rund 176px
    breit. Der Trigger bleibt im Markup und auf display:none; das
@@ -105,16 +101,25 @@
 .navlink:last-child  { padding-right: 1.2em; }
 
 @media (max-width: 719px) {
-  /* Das Padding steht in em der Navigationsschrift, und die hat einen
-     Boden. Dadurch bleibt die Pille absolut fast gleich groß, während der
-     Viewport schrumpft: am Desktop nimmt sie 5% der Breite ein, bei 375px
-     wären es 16% — sie würde die Headline überdecken. Flacheres Padding
-     bringt sie auf rund 44px Höhe, also weiterhin auf die Mindestgröße
-     für Fingertippen, bei etwa 9% der Breite. Form, Ort und Verhalten
-     bleiben unverändert. */
-  .navlink             { padding: 1.1em .8em 1em; }
-  .navlink:first-child { padding-left: 1.2em; }
-  .navlink:last-child  { padding-right: 1.1em; }
+  /* Die Pille wandert nach unten in die Mitte. So macht es die Referenz
+     auf dem Telefon auch, und sie loest damit ein Platzproblem: oben
+     rechts nimmt die Pille am Desktop 5% der Breite ein, bei 375px waeren
+     es 47% — sie stand dort direkt ueber der Headline und musste flacher
+     gedrueckt werden, um sie nicht zu beruehren. Unten stoert sie
+     niemanden und darf ihre natuerliche Hoehe behalten.
+
+     Gemessen an der Referenz bei 375px: Pille 60,5px hoch, 11,3px ueber
+     der Unterkante. Ohne die frueher noetige Padding-Reduktion kommt
+     unsere auf 60px, weil das Padding in em der Navigationsschrift steht
+     und die bei 13px Boden liegt. Der Abstand nach unten ist mit 3u
+     ebenfalls derselbe. */
+  .nav {
+    top: auto;
+    right: auto;
+    bottom: calc(var(--u) * 3);
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
 
 /* Harte Inversion, ohne Dauer — das prägendste Merkmal des Designs */
@@ -625,10 +630,16 @@
 @media (max-width: 719px) {
   /* Die Fußzeile bleibt eine Zeile wie am Desktop und bricht nur, wenn
      der Platz wirklich nicht reicht — dafür sorgt flex-wrap auf
-     .footer__links. Die frühere Freihaltung von 30u am unteren Rand ist
-     weg: sie war für die fixierte Bottom-Navigation da, und die sitzt
-     jetzt wieder oben rechts. */
-  .footer { flex-wrap: wrap; row-gap: var(--space-xs); }
+     .footer__links. */
+  .footer {
+    flex-wrap: wrap;
+    row-gap: var(--space-xs);
+    /* Die Navigationspille steht am Telefon fest ueber dem unteren Rand
+       und wuerde sonst auf der Fussleiste liegen. Die Referenz haelt an
+       derselben Stelle 35u frei, gemessen von der Unterkante des letzten
+       Fusstextes. */
+    padding-bottom: calc(var(--u) * 30);
+  }
 }
 
 
