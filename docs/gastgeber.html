@@ -10,10 +10,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="tokens.css?v=1787678580">
-<link rel="stylesheet" href="base.css?v=1787678580">
-<link rel="stylesheet" href="components.css?v=1787678580">
-<link rel="stylesheet" href="page.css?v=1787678580">
+<link rel="stylesheet" href="tokens.css?v=1787680332">
+<link rel="stylesheet" href="base.css?v=1787680332">
+<link rel="stylesheet" href="components.css?v=1787680332">
+<link rel="stylesheet" href="page.css?v=1787680332">
 </head>
 <body>
 
@@ -179,11 +179,23 @@
   });
 
   list.addEventListener('click', function (e) {
-    if (e.target.closest('.navlink')) {
-      trigger.setAttribute('aria-expanded', 'false');
-      list.setAttribute('data-open', 'false');
-    }
+    if (e.target.closest('.navlink')) close();
   });
+
+  /* Ein Menü, das sich nur über denselben Knopf wieder schließen lässt,
+     bleibt am Telefon leicht offen stehen. Deshalb schließt auch ein
+     Tippen daneben und die Escape-Taste. */
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('.nav')) close();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') close();
+  });
+
+  function close() {
+    trigger.setAttribute('aria-expanded', 'false');
+    list.setAttribute('data-open', 'false');
+  }
 })();
 
 /* Akkordeon ----------------------------------------------------------- */

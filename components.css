@@ -131,6 +131,67 @@
 
 .nav__trigger { display: none; }
 
+@media (max-width: 719px) {
+  /* Auf dem Telefon wird aus der Pille ein Menue-Knopf, wie in der
+     Referenz. Der Trigger steht im Markup schon vor der Linkliste; mit
+     flex-direction: column liegt er dadurch oben und die Liste
+     darunter. Weil die Pille am unteren Rand verankert ist, waechst sie
+     beim Oeffnen nach oben, statt aus dem Bild zu laufen.
+
+     Die Mindestbreite von 45u ist der gemessene Wert der Referenz
+     (168,8px bei 375px). Ohne sie waere die geschlossene Pille nur so
+     breit wie das Wort „Menue" und wuerde beim Oeffnen aufspringen. */
+  .nav {
+    flex-direction: column;
+    align-items: stretch;
+    min-width: calc(var(--u) * 45);
+  }
+
+  .nav__trigger {
+    display: block;
+    width: 100%;
+    padding: 1.7em .9em 1.5em;
+
+    background: none;
+    border: none;
+    cursor: pointer;
+
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+    font-size: var(--fs-nav);
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-body);
+    letter-spacing: var(--ls-body);
+    text-align: center;
+
+    transition-duration: var(--transition-instant);
+  }
+  /* Dieselbe harte Inversion wie bei den Links. Im geoeffneten Zustand
+     bleibt sie stehen, damit der Knopf zeigt, dass die Liste offen ist. */
+  .nav__trigger:hover,
+  .nav__trigger[aria-expanded="true"] {
+    background-color: var(--color-secondary);
+    color: var(--color-text-inverse);
+    opacity: 1;
+  }
+
+  /* align-items muss hier zurueckgesetzt werden: die Grundregel zentriert
+     die Eintraege, was in der waagerechten Pille richtig ist. Senkrecht
+     gestapelt macht es die Links nur so breit wie ihr Wort, samt zu
+     kleiner Tippflaeche und zu kurzer Trennlinie. */
+  .nav__list                    { display: none; flex-direction: column; align-items: stretch; }
+  .nav__list[data-open="true"]  { display: flex; border-top: var(--border-default); }
+
+  /* Zentriert, weil die Pille breiter ist als die Woerter, und mit
+     Trennlinie zwischen den Eintraegen. Die Sonderregeln fuer erstes
+     und letztes Kind gelten der waagerechten Pille am Desktop und
+     stoeren hier nur. */
+  .navlink,
+  .navlink:first-child,
+  .navlink:last-child { padding: 1.7em .9em 1.5em; text-align: center; }
+  .navlink + .navlink { border-top: var(--border-default); }
+}
+
 
 /* ════════════════════════════════════════════════════════════
    3  DISPLAY-HEADLINE MIT OUTLINE-OVERLAY   ← die Signature
@@ -626,6 +687,29 @@
   font-weight: var(--fw-bold);
   cursor: pointer;
 }
+
+/* ── Unter 720px: Kartenmaße mit Boden ──────────────────────
+   Alles im System rechnet in Vielfachen von --u, und bei den Karten
+   fuehrt das am Telefon zu Werten, die nicht mehr tragen. Gemessen bei
+   375px gegen die Referenz:
+
+     Innenabstand   9,4 / 7,5 / 20,6px   ->  Referenz 22,5 / 22,5 / 45px
+     Plus-Symbol    9,4 x 9,4px          ->  Referenz 30 x 30px
+     Kartenhoehe    51px                 ->  Referenz 99,5px
+
+   Die Karte war damit halb so gross wie das Vorbild, und das Pluszeichen
+   war mit 9px kaum noch zu treffen. Die Werte hier sind die gemessenen
+   der Referenz. Radius und Ueberlappung stehen als Token in tokens.css.
+
+   Der Fliesstext der Panels bekommt denselben linken Anschlag wie der
+   Titel, sonst springt er beim Aufklappen nach innen. */
+@media (max-width: 719px) {
+  .accordion__toggle { padding: 22.5px 22.5px 45px; }
+  .accordion__panel  { padding-inline: 22.5px; }
+  .plus              { width: 30px; height: 30px; }
+  .accordion__item:last-child { padding-top: 30px; }
+}
+
 
 @media (max-width: 719px) {
   /* Die Fußzeile bleibt eine Zeile wie am Desktop und bricht nur, wenn

@@ -291,6 +291,18 @@
        (right) und Hero-Headline. */
     --container-padding: calc(var(--u) * 8);
 
+    /* Der Kartenradius skaliert nicht mit. Bei 1,33u waeren es am Telefon
+       5px, und damit sehen die Karten aus wie Kaesten mit gebrochener
+       Ecke statt wie die runden Karten am Desktop. Die Referenz haelt an
+       derselben Stelle konstant 19,2px, auf jeder Breite. Genau das ist
+       hier eingetragen.
+
+       Dasselbe fuer die Ueberlappung des Kartenstapels: proportional
+       waeren es 12,8px statt 49px, der Stapel verliert dadurch seine
+       Tiefe. 30px ist der gemessene Wert der Referenz (30,8px). */
+    --radius-md:    19.2px;
+    --card-overlap: -30px;
+
     /* Der breitere Rand macht die Textspalte schmaler, und daran hängen
        die Display-Headlines: ihre Schriftgrade sind so bestimmt, dass die
        längste Zeile die Contentbreite genau füllt (siehe page.css,
