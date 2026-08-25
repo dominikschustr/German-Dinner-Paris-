@@ -243,23 +243,13 @@
 }
 
 @media (max-width: 719px) {
-  /* Zwei Korrekturen, beide rechnerisch, damit der Arc exakt so groß und
-     so weit angeschnitten bleibt wie am Desktop:
-
-     72.5% statt 145%, weil die Bildspalte beim Stapeln von der halben auf
-     die volle Contentbreite springt. 145% von 44,45vw und 72.5% von
-     88,9vw sind beide 64,45vw — dieselbe Bildbreite, gemessen am
-     Viewport. Ohne diese Halbierung wäre der Arc am Handy doppelt so
-     groß wie am Desktop.
-
-     margin-left bleibt bei -26u und ist damit ebenfalls unverändert in vw,
-     der Anschnitt links stimmt also weiter. Nur der negative margin-top
-     muss weg: er zog das Objekt am Desktop neben dem Kartenstapel nach
-     oben, hier stünde es damit im Vorspanntext. */
-  .split__image {
-    width: 72.5%;
-    margin-top: 0;
-  }
+  /* Am Telefon steht der Arc nicht mehr. Am Desktop trägt er die linke
+     Hälfte des Splits und ist links angeschnitten; beim Stapeln wird
+     daraus ein 64vw breites Bild über dem Kartenstapel, das dort nichts
+     mehr komponiert und den Weg zu den Karten nur verlängert. Die
+     Bildspalte fällt deshalb ganz weg statt nur ihr Inhalt: ein leeres
+     Flex-Kind würde weiter Platz beanspruchen. */
+  .split__visual { display: none; }
 }
 
 
@@ -370,27 +360,100 @@
    Die zweite und letzte Stelle, an der die Bildschirmbreite ein anderes
    Layout erzwingt.
 
-   Am Desktop steht der Fließtext im Manifest rechts neben dem
-   Brandenburger Tor — der Versatz von 44,44u macht Platz dafür. Fällt
-   dieser Versatz weg (siehe --column-offset-half in tokens.css), liegt
-   der Absatz genau hinter dem Tor und ist unlesbar.
+   Am Desktop steht der Fließtext im Manifest rechts neben dem Bild —
+   der Versatz von 44,44u macht Platz dafür. Fällt dieser Versatz weg
+   (siehe --column-offset-half in tokens.css), liegt der Absatz genau
+   hinter dem Objekt und ist unlesbar.
 
-   Die Objekte behalten trotzdem ihre Position, denn sie tragen die
-   Komposition. Stattdessen reserviert der Headline-Wrapper deren Höhe,
-   sodass der Text darunter beginnt statt daneben. Die Werte kommen aus
-   den Objektmaßen selbst, jeweils margin-top plus sichtbare Bildhöhe:
+   Die verbliebenen Objekte behalten trotzdem ihre Position, denn sie
+   tragen die Komposition. Stattdessen reserviert der Headline-Wrapper
+   deren Höhe, sodass der Text darunter beginnt statt daneben. Die Werte
+   kommen aus den Objektmaßen selbst, jeweils margin-top plus sichtbare
+   Bildhöhe:
 
-     Tor           48u + 54u × 0,79  = 91u   → 100u mit Luft
-     Currywurst    19u + 30u × 0,78  = 42u
+     Currywurst    19u + 30u × 0,78  = 42u   →  48u
      Baguette       5u + 44u × 0,88  = 44u   →  52u
      Sacré-Cœur   0,5u + 44u × 0,88  = 39u   →  48u
+
+   Das Tor stand hier mit 48u + 54u × 0,79 = 91u und war der Grund für
+   die früheren 100u. Es entfällt am Telefon, siehe weiter unten.
 
    Der frühere Zwischenbereich 480–900px, der hier stand, ist ersatzlos
    weg. Er hat nur reparariert, was die Untergrenze von --u kaputt
    gemacht hat — und die gibt es nicht mehr. */
 
 @media (max-width: 719px) {
-  .headline--object                  { min-height: calc(var(--u) * 100); }
+  /* 100u galt, solange das Brandenburger Tor die Höhe im Manifest
+     bestimmt hat. Ohne das Tor bleibt dort nur die Currywurst mit
+     19u + 30u × 0,78 = 42u, und die drei Headline-Zeilen sind mit rund
+     47u ohnehin höher. 48u lassen darüber hinaus etwas Luft. */
+  .headline--object                  { min-height: calc(var(--u) *  48); }
   .section--dark   .headline--object { min-height: calc(var(--u) *  52); }
   .section--accent .headline--object { min-height: calc(var(--u) *  48); }
+}
+
+
+/* ── Unter 720px: Hero-Headline im Satzspiegel ──────────────
+   Am Desktop hebt die Headline das Seitenpadding auf und läuft bis an
+   die Viewportkanten. Am Telefon steht sie damit als einziges Element
+   ohne Rand, und weil sie zugleich das größte ist, fällt genau dort auf,
+   dass die Seite keinen hat. Sie bekommt deshalb denselben Satzspiegel
+   wie der übrige Inhalt.
+
+   Der Schriftgrad folgt daraus, er ist keine freie Wahl: „Zwei Heimaten"
+   ist beim Multiplikator 17 genau 99,2u breit. In die neue Box von
+   100u − 2 × 8u = 84u passt das nur bei 17 × 84 / 99,2 = 14,39. 14.2
+   lässt gut 1u Luft an der rechten Kante.
+
+   Die Mindesthöhe von 34u bleibt: sie hängt nicht an der Schrift,
+   sondern am Eiffelturm darüber (32u breit, sichtbar bis 31,6u). */
+@media (max-width: 719px) {
+  .headline--hero .headline__text {
+    width: 100%;
+    margin-inline: 0;
+    /* Bewusst --u statt --u-display: die Displayeinheit ist am Telefon
+       schon um den Faktor 84/88,89 verkleinert, und der gilt für
+       Headlines im Satzspiegel. Die Hero-Headline kommt dagegen von der
+       vollen Viewportbreite und braucht den stärkeren Faktor 84/99,2. */
+    font-size: calc(var(--u) * 14.2);
+  }
+}
+
+
+/* ── Unter 720px: Bildobjekte bleiben am Seitenrand ─────────
+   Die Objekte sind relativ zur Textspalte positioniert, komponiert sind
+   sie aber gegen die Seitenkante: mindestens eines pro Sektion läuft
+   dort hinaus. Der breitere Rand verschiebt sie deshalb an die falsche
+   Stelle. Gemessen bei 375px: die Currywurst endete exakt auf der
+   Viewportkante statt mit 2,4u Luft davor, das Baguette war 2,4u weiter
+   angeschnitten als am Desktop.
+
+   Die Verschiebung gleicht genau die Differenz der beiden Seitenränder
+   aus (8u − 5,56u). Danach steht jedes Objekt wieder dort, wo es am
+   Desktop steht, gemessen am Viewport. */
+@media (max-width: 719px) {
+  .object { transform: translateX(calc(var(--u) * -2.44)); }
+}
+
+
+/* ── Unter 720px: kein Brandenburger Tor ────────────────────
+   Am Desktop steht das Tor links unter der Manifest-Headline und der
+   Fließtext rechts daneben. Am Telefon gibt es dieses Nebeneinander
+   nicht mehr: der Text rutscht unter das Bild, und das Tor wird zur
+   Fläche, die man durchscrollt. Es entfällt deshalb ganz. Die
+   Currywurst bleibt, weil sie in der Lücke neben „MORGEN" sitzt und
+   dort dieselbe Aufgabe erfüllt wie am Desktop. */
+@media (max-width: 719px) {
+  .object--tor-bleed { display: none; }
+}
+
+
+/* ── Unter 720px: Akkordeontitel ────────────────────────────
+   „Die Gastgeber", „Der Abend", „Der Austausch" und die übrigen stehen
+   in --fs-heading-sm, und dessen Boden von 21px greift am Telefon fast
+   auf voller Breite. Neben dem Fließtext mit 15px Boden wirkt das zu
+   nah an einer Headline. 19px ist knapp ein Zehntel weniger, der
+   Abstand zum Fließtext bleibt deutlich, die Titel bleiben Titel. */
+@media (max-width: 719px) {
+  .accordion__title { font-size: max(19px, calc(var(--u) * 2.22)); }
 }

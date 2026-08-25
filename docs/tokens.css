@@ -278,5 +278,24 @@
        genau die 320px Mindestspalte, darunter zu wenig. Unterhalb
        steht der Fließtext deshalb links, die Bildobjekte darüber. */
     --column-offset-half: 0px;
+
+    /* Der Seitenabstand. Proportional wären es bei 375px 20,8px, und das
+       ist an einem Telefon zu wenig: die Randspalte liest sich dort als
+       Zufall, nicht als Gestaltung. 8u sind 30px, also rund die Hälfte
+       mehr. Der Wert wirkt an drei Stellen gleichzeitig, weil alle drei
+       aus derselben Variable rechnen: Container, Navigationspille
+       (right) und Hero-Headline. */
+    --container-padding: calc(var(--u) * 8);
+
+    /* Der breitere Rand macht die Textspalte schmaler, und daran hängen
+       die Display-Headlines: ihre Schriftgrade sind so bestimmt, dass die
+       längste Zeile die Contentbreite genau füllt (siehe page.css,
+       „Headline-Größen"). Bliebe der Grad gleich, stünden sie über den
+       neuen Rand — gemessen 10px bei „Heute fremd", 12px bei „Was bei
+       uns". Statt vier Multiplikatoren einzeln nachzuziehen, folgt hier
+       die Displayeinheit selbst dem Satzspiegel: 84u neue Contentbreite
+       geteilt durch 88,89u alte. Jede künftige Headline ist damit
+       automatisch mitgeregelt. */
+    --u-display: calc(var(--u) * 84 / 88.89);
   }
 }
